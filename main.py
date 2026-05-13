@@ -61,6 +61,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 async def serve_dashboard():
     return FileResponse("static/index.html")
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
