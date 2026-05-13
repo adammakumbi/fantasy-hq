@@ -4,15 +4,18 @@ Independent scoring engine using FBref, Understat, FPL API.
 No Fantrax private API required.
 """
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 import logging
 import os
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from routers import players, fixtures, alerts, waiver
-from services.scheduler import start_scheduler, stop_scheduler
 from services.fixture_manager import fetch_and_store_fixtures, load_fixtures
+from services.scheduler import start_scheduler, stop_scheduler
 
 logging.basicConfig(
     level=logging.INFO,
@@ -51,6 +54,12 @@ app = FastAPI(
     version="2.0.0",
     lifespan=lifespan,
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def serve_dashboard():
+    return FileResponse("static/index.html")
 
 app.add_middleware(
     CORSMiddleware,
