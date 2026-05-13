@@ -403,76 +403,91 @@ function handleCSV(file){
   if(!file)return;
   const reader=new FileReader();
   reader.onload=function(e){
-    parseFantraxCSV(e.target.result);
+    parseFantraxCSV(e.target.result, file.name);
   };
   reader.readAsText(file);
 }
 
-function parseFantraxCSV(text){
-  const lines=text.trim().split('\n');
-  const headers=lines[0].replace(/"/g,'').split(',').map(h=>h.trim());
-  const idxStatus=headers.indexOf('Status');
-  const idxPlayer=headers.indexOf('Player');
-  const idxTeam=headers.indexOf('Team');
-  const idxPos=headers.indexOf('Position');
-  const idxFpts=headers.indexOf('FPts');
-  const idxFpg=headers.indexOf('FP/G');
-  const idxRank=headers.indexOf('RkOv');
-  const idxOpp=headers.indexOf('Opponent');
-
-  if(idxStatus<0||idxPlayer<0){
-    document.getElementById('csvStatus').innerHTML='<div class="error-msg">CSV format not recognised. Make sure you export from Fantrax Players page.</div>';
-    return;
+function parseCSVLine(line){
+  const result=[];
+  let cur='',inQuote=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){inQuote=!inQuote;}
+    else if(ch===','&&!inQuote){result.push(cur.trim());cur='';}
+    else{cur+=ch;}
   }
-
-  fantraxData={};
-  leagueRosters={};
-  mySquadNames=new Set();
-
-  for(let i=1;i<lines.length;i++){
-    const vals=lines[i].match(/(".*?"|[^,]+|(?<=,)(?=,)|(?<=,)$|^(?=,))/g)||[];
-    const clean=vals.map(v=>v.replace(/^"|"$/g,'').trim());
-    const status=clean[idxStatus]||'';
-    const player=clean[idxPlayer]||'';
-    if(!player)continue;
-
-    fantraxData[player]={
-      status,
-      fantraxPts:parseFloat(clean[idxFpts])||0,
-      fpg:parseFloat(clean[idxFpg])||0,
-      rank:parseInt(clean[idxRank])||999,
-      team:clean[idxTeam]||'',
-      pos:clean[idxPos]||'',
-      opponent:clean[idxOpp]||''
-    };
-
-    if(status===MY_CODE)mySquadNames.add(player);
-    if(!leagueRosters[status])leagueRosters[status]=[];
-    leagueRosters[status].push({name:player,...fantraxData[player]});
-  }
-
-  const mySquadCount=mySquadNames.size;
-  document.getElementById('statSquad').textContent=mySquadCount;
-
-  // Show loaded banner
-  const owners=Object.keys(leagueRosters).filter(s=>s!=='FA'&&s!=='WW');
-  document.getElementById('csvStatus').innerHTML=`
-    <div class="csv-loaded">
-      <div>✅</div>
-      <div>
-        <div class="csv-info">CSV loaded — ${file ? file.name : 'Fantrax data'}</div>
-        <div class="csv-stats">${mySquadCount} players on my squad · ${owners.length} teams · ${(leagueRosters.FA||[]).length} free agents</div>
-      </div>
-      <button class="btn secondary" onclick="document.getElementById('csvInput').click()" style="margin-left:auto">Replace</button>
-    </div>`;
-
-  renderMySquad();
-  renderLeagueRosters();
-  // Re-render draft/waiver with owner info
-  renderDraftTable();
-  renderWaiverCards();
+  result.push(cur.trim());
+  return result;
 }
 
+function parseFantraxCSV(text, fileName){
+  try{
+    const lines=text.trim().split(/\r?\n/);
+    const headers=parseCSVLine(lines[0]);
+    const idxStatus=headers.indexOf('Status');
+    const idxPlayer=headers.indexOf('Player');
+    const idxTeam=headers.indexOf('Team');
+    const idxPos=headers.indexOf('Position');
+    const idxFpts=headers.indexOf('FPts');
+    const idxFpg=headers.indexOf('FP/G');
+    const idxRank=headers.indexOf('RkOv');
+    const idxOpp=headers.indexOf('Opponent');
+
+    if(idxStatus<0||idxPlayer<0){
+      document.getElementById('csvStatus').innerHTML='<div class="error-msg">CSV format not recognised. Got columns: '+headers.join(', ')+'</div>';
+      return;
+    }
+
+    fantraxData={};
+    leagueRosters={};
+    mySquadNames=new Set();
+
+    for(let i=1;i<lines.length;i++){
+      if(!lines[i].trim())continue;
+      const clean=parseCSVLine(lines[i]);
+      const status=clean[idxStatus]||'';
+      const player=clean[idxPlayer]||'';
+      if(!player||!status)continue;
+
+      fantraxData[player]={
+        status,
+        fantraxPts:parseFloat(clean[idxFpts])||0,
+        fpg:parseFloat(clean[idxFpg])||0,
+        rank:parseInt(clean[idxRank])||999,
+        team:clean[idxTeam]||'',
+        pos:clean[idxPos]||'',
+        opponent:clean[idxOpp]||''
+      };
+
+      if(status===MY_CODE)mySquadNames.add(player);
+      if(!leagueRosters[status])leagueRosters[status]=[];
+      leagueRosters[status].push({name:player,...fantraxData[player]});
+    }
+
+    const mySquadCount=mySquadNames.size;
+    document.getElementById('statSquad').textContent=mySquadCount||'—';
+
+    const owners=Object.keys(leagueRosters).filter(s=>s!=='FA'&&s!=='WW');
+    const faCount=(leagueRosters.FA||[]).length;
+    document.getElementById('csvStatus').innerHTML=
+      '<div class="csv-loaded">'+
+      '<div>✅</div>'+
+      '<div>'+
+      '<div class="csv-info">CSV loaded — '+(fileName||'Fantrax data')+'</div>'+
+      '<div class="csv-stats">'+mySquadCount+' players on my squad · '+owners.length+' teams · '+faCount+' free agents</div>'+
+      '</div>'+
+      '<button class="btn secondary" onclick="document.getElementById('csvInput').click()" style="margin-left:auto">Replace</button>'+
+      '</div>';
+
+    renderMySquad();
+    renderLeagueRosters();
+    renderDraftTable();
+    renderWaiverCards();
+  }catch(err){
+    document.getElementById('csvStatus').innerHTML='<div class="error-msg">Error: '+err.message+'</div>';
+  }
+}
 // ── MY SQUAD ──
 function renderMySquad(){
   const el=document.getElementById('mySquadContainer');
