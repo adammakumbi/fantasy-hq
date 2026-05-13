@@ -749,9 +749,9 @@ async function loadFDR() {
 
 function renderFDR(data) {
   const el = document.getElementById('fdrContainer');
-  const teams = Object.entries(data);
+  const teams = data.map(t => [t.team, t]);
   if (!teams.length) { el.innerHTML = '<div class="empty">No fixture data</div>'; return; }
-  const maxGWs = Math.max(...teams.map(([,v]) => v.next_fixtures?.length || 0));
+  const maxGWs = Math.max(...teams.map(([,v]) => v.fixtures?.length || 0));
   const gwHeaders = Array.from({length: maxGWs}, (_,i) => `<th style="text-align:center">GW+${i+1}</th>`).join('');
   el.innerHTML = `
     <div class="section-title"><span class="accent">Fixture</span> Difficulty Rating</div>
@@ -761,7 +761,7 @@ function renderFDR(data) {
         <tbody>${teams.sort((a,b) => (a[1].avg_fdr||3) - (b[1].avg_fdr||3)).map(([team, info]) => `
           <tr>
             <td class="fdr-team">${team}</td>
-            ${(info.next_fixtures || []).map(f => `<td class="fdr-cell fdr-cell-${f.difficulty}" title="${f.opponent} (${f.is_home ? 'H' : 'A'})">${f.opponent?.substring(0,3).toUpperCase()} ${f.is_home ? 'H' : 'A'}</td>`).join('')}
+            ${(info.fixtures || []).map(f => `<td class="fdr-cell fdr-cell-${f.fdr}" title="${f.opponent} (${f.is_home ? 'H' : 'A'})">${f.opponent} ${f.is_home ? 'H' : 'A'}</td>`).join('')}
             <td style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--muted)">${info.avg_fdr?.toFixed(1)}</td>
           </tr>`).join('')}
         </tbody>
