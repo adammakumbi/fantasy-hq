@@ -7,154 +7,177 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a26; --border: #2a2a3a;
-    --accent: #00e5ff; --accent2: #ff6b35; --accent3: #7fff6b;
-    --text: #e8e8f0; --muted: #6b6b8a;
-    --gk: #ffd700; --def: #4fc3f7; --mid: #81c784; --fwd: #ff7043;
-    --good: #4caf50; --warn: #ff9800; --bad: #f44336;
+    --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--border:#2a2a3a;
+    --accent:#00e5ff;--accent2:#ff6b35;--accent3:#7fff6b;
+    --text:#e8e8f0;--muted:#6b6b8a;
+    --gk:#ffd700;--def:#4fc3f7;--mid:#81c784;--fwd:#ff7043;
+    --good:#4caf50;--warn:#ff9800;--bad:#f44336;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; }
-  header { background:var(--surface); border-bottom:1px solid var(--border); padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:64px; position:sticky; top:0; z-index:100; }
-  .logo { font-family:'Bebas Neue',cursive; font-size:2rem; letter-spacing:3px; color:var(--accent); text-shadow:0 0 20px rgba(0,229,255,0.4); }
-  .logo span { color:var(--accent2); }
-  .status-dot { width:8px; height:8px; background:var(--accent3); border-radius:50%; display:inline-block; margin-right:6px; animation:pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(127,255,107,0.4);}50%{opacity:0.8;box-shadow:0 0 0 6px rgba(127,255,107,0);} }
-  .api-status { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); display:flex; align-items:center; gap:6px; }
-  nav { background:var(--surface); border-bottom:1px solid var(--border); display:flex; padding:0 2rem; overflow-x:auto; }
-  nav button { background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:1px; text-transform:uppercase; padding:1rem 1.5rem; cursor:pointer; border-bottom:2px solid transparent; transition:all 0.2s; white-space:nowrap; }
-  nav button:hover { color:var(--text); }
-  nav button.active { color:var(--accent); border-bottom-color:var(--accent); }
-  main { padding:2rem; max-width:1400px; margin:0 auto; }
-  .settings-banner { background:linear-gradient(135deg,rgba(0,229,255,0.1),rgba(255,107,53,0.1)); border:1px solid var(--border); border-radius:12px; padding:1.5rem; margin-bottom:2rem; display:flex; gap:1.5rem; align-items:flex-end; flex-wrap:wrap; }
-  .settings-banner h3 { font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:var(--accent); width:100%; margin-bottom:-0.5rem; }
-  .field-group { display:flex; flex-direction:column; gap:6px; }
-  .field-group label { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
-  .field-group input,.field-group select { background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'DM Mono',monospace; font-size:0.9rem; padding:0.6rem 1rem; border-radius:6px; outline:none; width:140px; }
-  .field-group input:focus,.field-group select:focus { border-color:var(--accent); }
-  .btn { background:var(--accent); color:#000; border:none; font-family:'DM Mono',monospace; font-size:0.8rem; font-weight:500; letter-spacing:1px; text-transform:uppercase; padding:0.65rem 1.5rem; border-radius:6px; cursor:pointer; transition:all 0.2s; }
-  .btn:hover { background:#fff; transform:translateY(-1px); }
-  .btn.secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
-  .btn.secondary:hover { border-color:var(--accent); color:var(--accent); background:var(--surface2); transform:none; }
-  .btn.danger { background:rgba(244,67,54,0.15); color:var(--bad); border:1px solid rgba(244,67,54,0.3); }
-  .btn.danger:hover { background:rgba(244,67,54,0.25); transform:none; }
-  .tab { display:none; }
-  .tab.active { display:block; animation:fadeIn 0.3s ease; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);} }
-  .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
-  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.2rem; }
-  .stat-card .label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
-  .stat-card .value { font-family:'Bebas Neue',cursive; font-size:2rem; color:var(--accent); letter-spacing:1px; }
-  .stat-card .sub { font-size:0.75rem; color:var(--muted); margin-top:2px; }
-  .filters { display:flex; gap:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; align-items:center; }
-  .filter-btn { background:var(--surface); border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:1px; text-transform:uppercase; padding:0.4rem 0.9rem; border-radius:20px; cursor:pointer; transition:all 0.15s; }
-  .filter-btn:hover,.filter-btn.active { color:var(--accent); border-color:var(--accent); background:rgba(0,229,255,0.05); }
-  .filter-btn.gk.active { color:var(--gk); border-color:var(--gk); background:rgba(255,215,0,0.05); }
-  .filter-btn.def.active { color:var(--def); border-color:var(--def); background:rgba(79,195,247,0.05); }
-  .filter-btn.mid.active { color:var(--mid); border-color:var(--mid); background:rgba(129,199,132,0.05); }
-  .filter-btn.fwd.active { color:var(--fwd); border-color:var(--fwd); background:rgba(255,112,67,0.05); }
-  .search-input { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'DM Mono',monospace; font-size:0.8rem; padding:0.4rem 1rem; border-radius:20px; outline:none; width:200px; margin-left:auto; }
-  .search-input:focus { border-color:var(--accent); }
-  .table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--border); }
-  table { width:100%; border-collapse:collapse; }
-  thead { background:var(--surface2); }
-  thead th { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; padding:0.9rem 1rem; text-align:left; white-space:nowrap; }
-  tbody tr { border-top:1px solid var(--border); transition:background 0.1s; }
-  tbody tr:hover { background:var(--surface2); }
-  tbody tr.your-pick { background:rgba(0,229,255,0.05); border-left:2px solid var(--accent); }
-  td { padding:0.75rem 1rem; font-size:0.85rem; white-space:nowrap; }
-  .pick-num { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); }
-  .your-pick .pick-num { color:var(--accent); }
-  .player-name { font-weight:500; }
-  .your-pick-badge { display:inline-block; background:rgba(0,229,255,0.15); color:var(--accent); font-family:'DM Mono',monospace; font-size:0.6rem; padding:2px 6px; border-radius:3px; margin-left:6px; }
-  .pos-badge { font-family:'DM Mono',monospace; font-size:0.7rem; padding:2px 7px; border-radius:3px; font-weight:500; }
-  .pos-GK { background:rgba(255,215,0,0.15); color:var(--gk); }
-  .pos-DEF { background:rgba(79,195,247,0.15); color:var(--def); }
-  .pos-MID { background:rgba(129,199,132,0.15); color:var(--mid); }
-  .pos-FWD { background:rgba(255,112,67,0.15); color:var(--fwd); }
-  .score-cell { font-family:'DM Mono',monospace; font-weight:500; }
-  .fdr-bar { display:flex; gap:3px; align-items:center; }
-  .fdr-pip { width:10px; height:10px; border-radius:2px; }
-  .status-a { color:var(--accent3); }
-  .status-i,.status-d,.status-u,.status-s,.status-n { color:var(--bad); }
-  .loading { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4rem; gap:1rem; color:var(--muted); font-family:'DM Mono',monospace; font-size:0.8rem; }
-  .spinner { width:32px; height:32px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
-  @keyframes spin { to{transform:rotate(360deg);} }
-  .error-msg { background:rgba(244,67,54,0.1); border:1px solid rgba(244,67,54,0.3); color:#ff6b6b; border-radius:8px; padding:1rem 1.5rem; font-family:'DM Mono',monospace; font-size:0.8rem; margin:1rem 0; }
-  .round-badge { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); background:var(--surface2); padding:2px 6px; border-radius:3px; }
-  .fdr-team { font-weight:500; min-width:120px; }
-  .fdr-cell { font-family:'DM Mono',monospace; font-size:0.8rem; padding:0.6rem 0.8rem !important; text-align:center; }
-  .fdr-cell-1 { background:rgba(27,94,32,0.4); color:#69f0ae; }
-  .fdr-cell-2 { background:rgba(76,175,80,0.3); color:#a5d6a7; }
-  .fdr-cell-3 { background:rgba(255,152,0,0.2); color:#ffcc80; }
-  .fdr-cell-4 { background:rgba(244,67,54,0.25); color:#ef9a9a; }
-  .fdr-cell-5 { background:rgba(123,31,162,0.3); color:#ce93d8; }
-  .waiver-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; margin-top:1rem; }
-  .player-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.2rem; transition:border-color 0.2s,transform 0.2s; }
-  .player-card:hover { border-color:var(--accent); transform:translateY(-2px); }
-  .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.8rem; }
-  .card-score { font-family:'Bebas Neue',cursive; font-size:2.2rem; color:var(--accent); line-height:1; }
-  .card-score span { font-size:0.9rem; color:var(--muted); font-family:'DM Mono',monospace; }
-  .card-stats { display:grid; grid-template-columns:1fr 1fr; gap:0.4rem 1rem; margin-top:0.6rem; }
-  .card-stat { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); }
-  .card-stat span { color:var(--text); }
-  .health-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; }
-  .health-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.2rem; }
-  .health-card .label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
-  .health-ok { color:var(--accent3); font-family:'DM Mono',monospace; font-size:0.85rem; }
-  .health-val { font-family:'Bebas Neue',cursive; font-size:1.8rem; color:var(--text); }
-  .section-title { font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:2px; color:var(--text); margin-bottom:1rem; display:flex; align-items:center; gap:0.75rem; }
-  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
-  .section-title .accent { color:var(--accent); }
-  .empty { color:var(--muted); font-family:'DM Mono',monospace; font-size:0.8rem; padding:2rem; text-align:center; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
+  .logo{font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:3px;color:var(--accent);text-shadow:0 0 20px rgba(0,229,255,0.4);}
+  .logo span{color:var(--accent2);}
+  .status-dot{width:8px;height:8px;background:var(--accent3);border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(127,255,107,0.4);}50%{opacity:0.8;box-shadow:0 0 0 6px rgba(127,255,107,0);}}
+  .api-status{font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 2rem;overflow-x:auto;}
+  nav button{background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;padding:1rem 1.5rem;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;}
+  nav button:hover{color:var(--text);}
+  nav button.active{color:var(--accent);border-bottom-color:var(--accent);}
+  main{padding:2rem;max-width:1400px;margin:0 auto;}
+  .settings-banner{background:linear-gradient(135deg,rgba(0,229,255,0.1),rgba(255,107,53,0.1));border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:2rem;display:flex;gap:1.5rem;align-items:flex-end;flex-wrap:wrap;}
+  .settings-banner h3{font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:2px;color:var(--accent);width:100%;margin-bottom:-0.5rem;}
+  .field-group{display:flex;flex-direction:column;gap:6px;}
+  .field-group label{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .field-group input,.field-group select{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.9rem;padding:0.6rem 1rem;border-radius:6px;outline:none;width:140px;}
+  .field-group input:focus,.field-group select:focus{border-color:var(--accent);}
+  .btn{background:var(--accent);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;padding:0.65rem 1.5rem;border-radius:6px;cursor:pointer;transition:all 0.2s;}
+  .btn:hover{background:#fff;transform:translateY(-1px);}
+  .btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+  .btn.secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--surface2);transform:none;}
+  .btn.danger{background:rgba(244,67,54,0.15);color:var(--bad);border:1px solid rgba(244,67,54,0.3);}
+  .btn.danger:hover{background:rgba(244,67,54,0.25);transform:none;}
+  .tab{display:none;}
+  .tab.active{display:block;animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;}
+  .stat-card .label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+  .stat-card .value{font-family:'Bebas Neue',cursive;font-size:2rem;color:var(--accent);letter-spacing:1px;}
+  .stat-card .sub{font-size:0.75rem;color:var(--muted);margin-top:2px;}
+  .filters{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;}
+  .filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;padding:0.4rem 0.9rem;border-radius:20px;cursor:pointer;transition:all 0.15s;}
+  .filter-btn:hover,.filter-btn.active{color:var(--accent);border-color:var(--accent);background:rgba(0,229,255,0.05);}
+  .filter-btn.gk.active{color:var(--gk);border-color:var(--gk);background:rgba(255,215,0,0.05);}
+  .filter-btn.def.active{color:var(--def);border-color:var(--def);background:rgba(79,195,247,0.05);}
+  .filter-btn.mid.active{color:var(--mid);border-color:var(--mid);background:rgba(129,199,132,0.05);}
+  .filter-btn.fwd.active{color:var(--fwd);border-color:var(--fwd);background:rgba(255,112,67,0.05);}
+  .search-input{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.8rem;padding:0.4rem 1rem;border-radius:20px;outline:none;width:200px;margin-left:auto;}
+  .search-input:focus{border-color:var(--accent);}
+  .table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+  table{width:100%;border-collapse:collapse;}
+  thead{background:var(--surface2);}
+  thead th{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:0.9rem 1rem;text-align:left;white-space:nowrap;}
+  tbody tr{border-top:1px solid var(--border);transition:background 0.1s;}
+  tbody tr:hover{background:var(--surface2);}
+  tbody tr.my-squad{background:rgba(127,255,107,0.05);border-left:2px solid var(--accent3);}
+  tbody tr.your-pick{background:rgba(0,229,255,0.05);border-left:2px solid var(--accent);}
+  td{padding:0.75rem 1rem;font-size:0.85rem;white-space:nowrap;}
+  .pick-num{font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);}
+  .your-pick .pick-num{color:var(--accent);}
+  .player-name{font-weight:500;}
+  .your-pick-badge{display:inline-block;background:rgba(0,229,255,0.15);color:var(--accent);font-family:'DM Mono',monospace;font-size:0.6rem;padding:2px 6px;border-radius:3px;margin-left:6px;}
+  .my-squad-badge{display:inline-block;background:rgba(127,255,107,0.15);color:var(--accent3);font-family:'DM Mono',monospace;font-size:0.6rem;padding:2px 6px;border-radius:3px;margin-left:6px;}
+  .owner-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:0.65rem;padding:2px 7px;border-radius:3px;margin-left:4px;background:rgba(255,107,53,0.15);color:var(--accent2);}
+  .pos-badge{font-family:'DM Mono',monospace;font-size:0.7rem;padding:2px 7px;border-radius:3px;font-weight:500;}
+  .pos-GK{background:rgba(255,215,0,0.15);color:var(--gk);}
+  .pos-DEF,.pos-D{background:rgba(79,195,247,0.15);color:var(--def);}
+  .pos-MID,.pos-M{background:rgba(129,199,132,0.15);color:var(--mid);}
+  .pos-FWD,.pos-F{background:rgba(255,112,67,0.15);color:var(--fwd);}
+  .pos-G{background:rgba(255,215,0,0.15);color:var(--gk);}
+  .score-cell{font-family:'DM Mono',monospace;font-weight:500;}
+  .fdr-bar{display:flex;gap:3px;align-items:center;}
+  .fdr-pip{width:10px;height:10px;border-radius:2px;}
+  .status-a{color:var(--accent3);}
+  .status-i,.status-d,.status-u,.status-s,.status-n{color:var(--bad);}
+  .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;gap:1rem;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.8rem;}
+  .spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .error-msg{background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);color:#ff6b6b;border-radius:8px;padding:1rem 1.5rem;font-family:'DM Mono',monospace;font-size:0.8rem;margin:1rem 0;}
+  .success-msg{background:rgba(127,255,107,0.1);border:1px solid rgba(127,255,107,0.3);color:var(--accent3);border-radius:8px;padding:1rem 1.5rem;font-family:'DM Mono',monospace;font-size:0.8rem;margin:1rem 0;}
+  .round-badge{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);background:var(--surface2);padding:2px 6px;border-radius:3px;}
+  .fdr-team{font-weight:500;min-width:120px;}
+  .fdr-cell{font-family:'DM Mono',monospace;font-size:0.8rem;padding:0.6rem 0.8rem !important;text-align:center;}
+  .fdr-cell-1{background:rgba(27,94,32,0.4);color:#69f0ae;}
+  .fdr-cell-2{background:rgba(76,175,80,0.3);color:#a5d6a7;}
+  .fdr-cell-3{background:rgba(255,152,0,0.2);color:#ffcc80;}
+  .fdr-cell-4{background:rgba(244,67,54,0.25);color:#ef9a9a;}
+  .fdr-cell-5{background:rgba(123,31,162,0.3);color:#ce93d8;}
+  .waiver-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1rem;}
+  .player-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;transition:border-color 0.2s,transform 0.2s;}
+  .player-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.8rem;}
+  .card-score{font-family:'Bebas Neue',cursive;font-size:2.2rem;color:var(--accent);line-height:1;}
+  .card-score span{font-size:0.9rem;color:var(--muted);font-family:'DM Mono',monospace;}
+  .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem 1rem;margin-top:0.6rem;}
+  .card-stat{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);}
+  .card-stat span{color:var(--text);}
+  .health-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;}
+  .health-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;}
+  .health-card .label{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+  .health-ok{color:var(--accent3);font-family:'DM Mono',monospace;font-size:0.85rem;}
+  .health-val{font-family:'Bebas Neue',cursive;font-size:1.8rem;color:var(--text);}
+  .section-title{font-family:'Bebas Neue',cursive;font-size:1.4rem;letter-spacing:2px;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .section-title .accent{color:var(--accent);}
+  .empty{color:var(--muted);font-family:'DM Mono',monospace;font-size:0.8rem;padding:2rem;text-align:center;}
+
+  /* CSV UPLOAD */
+  .upload-zone{border:2px dashed var(--border);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface);margin-bottom:1.5rem;}
+  .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(0,229,255,0.05);}
+  .upload-zone input{display:none;}
+  .upload-icon{font-size:2.5rem;margin-bottom:0.75rem;}
+  .upload-title{font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:2px;color:var(--text);margin-bottom:0.4rem;}
+  .upload-sub{font-size:0.8rem;color:var(--muted);}
+  .csv-loaded{background:rgba(127,255,107,0.07);border:1px solid rgba(127,255,107,0.3);border-radius:10px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  .csv-loaded .csv-info{font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--accent3);}
+  .csv-loaded .csv-stats{font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);}
+
+  /* TEAM TABS */
+  .team-tabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+  .team-tab-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;padding:0.4rem 0.9rem;border-radius:6px;cursor:pointer;transition:all 0.15s;}
+  .team-tab-btn:hover,.team-tab-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,0.05);}
+  .team-tab-btn.me{border-color:var(--accent3);color:var(--accent3);background:rgba(127,255,107,0.07);}
+  .team-tab-btn.me.active{background:rgba(127,255,107,0.15);}
 
   /* TRADE */
-  .trade-layout { display:grid; grid-template-columns:1fr auto 1fr; gap:1.5rem; align-items:start; margin-bottom:2rem; }
-  .trade-side { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.5rem; }
-  .trade-side.giving { border-color:rgba(244,67,54,0.3); }
-  .trade-side.receiving { border-color:rgba(127,255,107,0.3); }
-  .trade-side-title { font-family:'Bebas Neue',cursive; font-size:1.1rem; letter-spacing:2px; margin-bottom:1rem; }
-  .giving .trade-side-title { color:var(--bad); }
-  .receiving .trade-side-title { color:var(--accent3); }
-  .trade-vs { display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',cursive; font-size:2rem; color:var(--muted); padding-top:3rem; }
-  .trade-search-wrap { position:relative; margin-bottom:0.75rem; }
-  .trade-search { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'DM Mono',monospace; font-size:0.85rem; padding:0.6rem 1rem; border-radius:6px; outline:none; }
-  .trade-search:focus { border-color:var(--accent); }
-  .trade-dropdown { position:absolute; top:100%; left:0; right:0; background:var(--surface2); border:1px solid var(--border); border-top:none; border-radius:0 0 8px 8px; max-height:220px; overflow-y:auto; z-index:50; display:none; }
-  .trade-dropdown.open { display:block; }
-  .trade-dropdown-item { padding:0.6rem 1rem; font-size:0.82rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:background 0.1s; border-bottom:1px solid var(--border); }
-  .trade-dropdown-item:last-child { border-bottom:none; }
-  .trade-dropdown-item:hover { background:var(--border); }
-  .dd-score { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--accent); }
-  .trade-selected { display:flex; flex-direction:column; gap:0.5rem; min-height:40px; }
-  .trade-chip { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:0.5rem 0.75rem; display:flex; justify-content:space-between; align-items:center; gap:0.5rem; }
-  .trade-chip button { background:none; border:none; color:var(--muted); cursor:pointer; font-size:1.1rem; line-height:1; padding:0; }
-  .trade-chip button:hover { color:var(--bad); }
-  .verdict-box { border-radius:16px; padding:2rem; margin-bottom:2rem; text-align:center; border:2px solid; }
-  .verdict-win { background:rgba(127,255,107,0.07); border-color:rgba(127,255,107,0.4); }
-  .verdict-loss { background:rgba(244,67,54,0.07); border-color:rgba(244,67,54,0.4); }
-  .verdict-even { background:rgba(255,152,0,0.07); border-color:rgba(255,152,0,0.4); }
-  .verdict-icon { font-size:3rem; margin-bottom:0.5rem; }
-  .verdict-title { font-family:'Bebas Neue',cursive; font-size:2.5rem; letter-spacing:3px; margin-bottom:0.5rem; }
-  .verdict-win .verdict-title { color:var(--accent3); }
-  .verdict-loss .verdict-title { color:var(--bad); }
-  .verdict-even .verdict-title { color:var(--warn); }
-  .verdict-sub { color:var(--muted); font-size:0.9rem; max-width:500px; margin:0 auto; }
-  .compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem; }
-  .compare-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-  .compare-card-header { padding:1rem 1.2rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
-  .compare-rows { padding:0.5rem 0; }
-  .compare-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 1.2rem; }
-  .compare-row:nth-child(even) { background:rgba(255,255,255,0.02); }
-  .compare-row .cr-label { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); text-transform:uppercase; }
-  .compare-row .cr-val { font-family:'DM Mono',monospace; font-size:0.85rem; font-weight:500; }
-  .reasons { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.5rem; margin-bottom:2rem; }
-  .reason-item { display:flex; gap:0.75rem; align-items:flex-start; padding:0.6rem 0; border-bottom:1px solid var(--border); }
-  .reason-item:last-child { border-bottom:none; }
-  .reason-icon { font-size:1.1rem; flex-shrink:0; margin-top:1px; }
-  .reason-text { font-size:0.85rem; color:var(--text); line-height:1.5; }
-  .reason-text strong { color:var(--accent); }
-  @media(max-width:768px) { .trade-layout{grid-template-columns:1fr;} .trade-vs{padding-top:0;} .compare-grid{grid-template-columns:1fr;} }
+  .trade-layout{display:grid;grid-template-columns:1fr auto 1fr;gap:1.5rem;align-items:start;margin-bottom:2rem;}
+  .trade-side{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+  .trade-side.giving{border-color:rgba(244,67,54,0.3);}
+  .trade-side.receiving{border-color:rgba(127,255,107,0.3);}
+  .trade-side-title{font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:2px;margin-bottom:1rem;}
+  .giving .trade-side-title{color:var(--bad);}
+  .receiving .trade-side-title{color:var(--accent3);}
+  .trade-vs{display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;color:var(--muted);padding-top:3rem;}
+  .trade-search-wrap{position:relative;margin-bottom:0.75rem;}
+  .trade-search{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.85rem;padding:0.6rem 1rem;border-radius:6px;outline:none;}
+  .trade-search:focus{border-color:var(--accent);}
+  .trade-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;max-height:220px;overflow-y:auto;z-index:50;display:none;}
+  .trade-dropdown.open{display:block;}
+  .trade-dropdown-item{padding:0.6rem 1rem;font-size:0.82rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background 0.1s;border-bottom:1px solid var(--border);}
+  .trade-dropdown-item:last-child{border-bottom:none;}
+  .trade-dropdown-item:hover{background:var(--border);}
+  .dd-score{font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent);}
+  .trade-selected{display:flex;flex-direction:column;gap:0.5rem;min-height:40px;}
+  .trade-chip{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.75rem;display:flex;justify-content:space-between;align-items:center;gap:0.5rem;}
+  .trade-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;line-height:1;padding:0;}
+  .trade-chip button:hover{color:var(--bad);}
+  .verdict-box{border-radius:16px;padding:2rem;margin-bottom:2rem;text-align:center;border:2px solid;}
+  .verdict-win{background:rgba(127,255,107,0.07);border-color:rgba(127,255,107,0.4);}
+  .verdict-loss{background:rgba(244,67,54,0.07);border-color:rgba(244,67,54,0.4);}
+  .verdict-even{background:rgba(255,152,0,0.07);border-color:rgba(255,152,0,0.4);}
+  .verdict-icon{font-size:3rem;margin-bottom:0.5rem;}
+  .verdict-title{font-family:'Bebas Neue',cursive;font-size:2.5rem;letter-spacing:3px;margin-bottom:0.5rem;}
+  .verdict-win .verdict-title{color:var(--accent3);}
+  .verdict-loss .verdict-title{color:var(--bad);}
+  .verdict-even .verdict-title{color:var(--warn);}
+  .verdict-sub{color:var(--muted);font-size:0.9rem;max-width:500px;margin:0 auto;}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;}
+  .compare-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .compare-card-header{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+  .compare-rows{padding:0.5rem 0;}
+  .compare-row{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 1.2rem;}
+  .compare-row:nth-child(even){background:rgba(255,255,255,0.02);}
+  .compare-row .cr-label{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-transform:uppercase;}
+  .compare-row .cr-val{font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:500;}
+  .reasons{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:2rem;}
+  .reason-item{display:flex;gap:0.75rem;align-items:flex-start;padding:0.6rem 0;border-bottom:1px solid var(--border);}
+  .reason-item:last-child{border-bottom:none;}
+  .reason-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+  .reason-text{font-size:0.85rem;color:var(--text);line-height:1.5;}
+  .reason-text strong{color:var(--accent);}
+  @media(max-width:768px){.trade-layout{grid-template-columns:1fr;}.trade-vs{padding-top:0;}.compare-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -166,6 +189,8 @@
 
 <nav>
   <button class="active" onclick="switchTab('dashboard',this)">Dashboard</button>
+  <button onclick="switchTab('mysquad',this)">My Squad</button>
+  <button onclick="switchTab('league',this)">League Rosters</button>
   <button onclick="switchTab('draft',this)">Draft Board</button>
   <button onclick="switchTab('waiver',this)">Waiver Wire</button>
   <button onclick="switchTab('trade',this)">Trade Analyser</button>
@@ -174,10 +199,11 @@
 </nav>
 
 <main>
+  <!-- SETTINGS -->
   <div class="settings-banner">
     <h3>⚙ League Settings</h3>
     <div class="field-group"><label>Draft Position</label><input type="number" id="draftPos" min="1" max="20" placeholder="e.g. 10"></div>
-    <div class="field-group"><label>League Size</label><select id="leagueSize"><option value="8">8 teams</option><option value="10">10 teams</option><option value="12" selected>12 teams</option><option value="14">14 teams</option><option value="16">16 teams</option></select></div>
+    <div class="field-group"><label>League Size</label><select id="leagueSize"><option value="8" selected>8 teams</option><option value="10">10 teams</option><option value="12">12 teams</option></select></div>
     <div class="field-group"><label>Min Games</label><input type="number" id="minGames" min="1" max="30" value="5"></div>
     <button class="btn" onclick="loadAll()">Load Data</button>
   </div>
@@ -188,14 +214,39 @@
       <div class="stat-card"><div class="label">Total Players</div><div class="value" id="statTotal">—</div><div class="sub">in database</div></div>
       <div class="stat-card"><div class="label">Top Score/90</div><div class="value" id="statTopScore">—</div><div class="sub" id="statTopName">loading...</div></div>
       <div class="stat-card"><div class="label">Current GW</div><div class="value" id="statGW">—</div><div class="sub" id="statGWSub">loading...</div></div>
-      <div class="stat-card"><div class="label">Your Picks</div><div class="value" id="statPicks">—</div><div class="sub" id="statPickSub">set draft position</div></div>
+      <div class="stat-card"><div class="label">My Squad</div><div class="value" id="statSquad">—</div><div class="sub">players loaded</div></div>
       <div class="stat-card"><div class="label">Season</div><div class="value" id="statSeason" style="font-size:1.4rem">—</div><div class="sub">active</div></div>
     </div>
     <div class="section-title"><span class="accent">Top 10</span> Players This Season</div>
     <div id="top10Container"><div class="loading"><div class="spinner"></div>Loading top players...</div></div>
   </div>
 
-  <!-- DRAFT -->
+  <!-- MY SQUAD -->
+  <div id="tab-mysquad" class="tab">
+    <div class="section-title"><span class="accent">My</span> Squad</div>
+    <div id="csvUploadZone">
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvInput').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+        <input type="file" id="csvInput" accept=".csv" onchange="handleCSV(this.files[0])">
+        <div class="upload-icon">📂</div>
+        <div class="upload-title">Upload Fantrax CSV</div>
+        <div class="upload-sub">Export from Fantrax → Players → Download CSV<br>Drag & drop or click to browse</div>
+      </div>
+    </div>
+    <div id="csvStatus"></div>
+    <div id="mySquadContainer"><div class="empty">Upload your Fantrax CSV to see your squad</div></div>
+  </div>
+
+  <!-- LEAGUE ROSTERS -->
+  <div id="tab-league" class="tab">
+    <div class="section-title"><span class="accent">League</span> Rosters</div>
+    <div id="leagueUploadPrompt"><div class="empty">Upload your Fantrax CSV (via My Squad tab) to see all team rosters</div></div>
+    <div id="leagueContainer" style="display:none">
+      <div class="team-tabs" id="teamTabs"></div>
+      <div id="teamRosterContainer"></div>
+    </div>
+  </div>
+
+  <!-- DRAFT BOARD -->
   <div id="tab-draft" class="tab">
     <div class="filters">
       <button class="filter-btn active" onclick="setDraftFilter('ALL',this)">All</button>
@@ -209,7 +260,7 @@
     <div id="draftContainer"><div class="empty">Set your draft position and click Load Data above</div></div>
   </div>
 
-  <!-- WAIVER -->
+  <!-- WAIVER WIRE -->
   <div id="tab-waiver" class="tab">
     <div class="filters">
       <button class="filter-btn active" onclick="setWaiverFilter('ALL',this)">All</button>
@@ -217,6 +268,9 @@
       <button class="filter-btn def" onclick="setWaiverFilter('DEF',this)">DEF</button>
       <button class="filter-btn mid" onclick="setWaiverFilter('MID',this)">MID</button>
       <button class="filter-btn fwd" onclick="setWaiverFilter('FWD',this)">FWD</button>
+      <label style="display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);cursor:pointer">
+        <input type="checkbox" id="faOnlyCheck" onchange="renderWaiverCards()"> FA Only
+      </label>
       <input type="text" class="search-input" placeholder="Search player..." oninput="filterWaiverSearch(this.value)">
     </div>
     <div class="waiver-grid" id="waiverContainer"><div class="empty" style="grid-column:1/-1">Click Load Data to fetch waiver wire</div></div>
@@ -225,8 +279,7 @@
   <!-- TRADE ANALYSER -->
   <div id="tab-trade" class="tab">
     <div class="section-title"><span class="accent">Trade</span> Analyser</div>
-    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem">Search and select players on each side, then click Analyse Trade for a full breakdown.</p>
-
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem">Search players on each side — your squad auto-populates the give side if CSV is loaded.</p>
     <div class="trade-layout">
       <div class="trade-side giving">
         <div class="trade-side-title">📤 You Give</div>
@@ -236,9 +289,7 @@
         </div>
         <div class="trade-selected" id="sel-give"><div style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">No players selected</div></div>
       </div>
-
       <div class="trade-vs">VS</div>
-
       <div class="trade-side receiving">
         <div class="trade-side-title">📥 You Receive</div>
         <div class="trade-search-wrap">
@@ -248,12 +299,10 @@
         <div class="trade-selected" id="sel-receive"><div style="color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem">No players selected</div></div>
       </div>
     </div>
-
     <div style="display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap">
       <button class="btn" onclick="analyseTrade()">⚡ Analyse Trade</button>
       <button class="btn danger" onclick="resetTrade()">✕ Reset</button>
     </div>
-
     <div id="tradeResult"></div>
   </div>
 
@@ -289,156 +338,350 @@
 
 <script>
 const API = 'https://web-production-b4ef1.up.railway.app';
-let allDraftPlayers = [], allWaiverPlayers = [], allPlayers = [];
-let draftFilter = 'ALL', waiverFilter = 'ALL';
-let showMyPicksOnly = false, draftSearchTerm = '', waiverSearchTerm = '';
-let tradeSide = { give: [], receive: [] };
+const OWNER_NAMES = { TS:'Tom', DM:'Dave', JP:'Jack', AJ:'Andy', CP:'Prentice', MJ:'Matt', DF:'Dan', AM:'Me (Adam)', WW:'Waiver Wire', FA:'Free Agent' };
+const MY_CODE = 'AM';
 
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+let allDraftPlayers=[],allWaiverPlayers=[],allPlayers=[];
+let draftFilter='ALL',waiverFilter='ALL';
+let showMyPicksOnly=false,draftSearchTerm='',waiverSearchTerm='';
+let tradeSide={give:[],receive:[]};
+let fantraxData={}; // { playerName: { status, fantraxPts, fpg, rank } }
+let leagueRosters={}; // { teamCode: [players] }
+let mySquadNames=new Set();
+
+// ── NAV ──
+function switchTab(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
-  if (name === 'fdr' && !fdrLoaded) loadFDR();
+  if(name==='fdr'&&!fdrLoaded)loadFDR();
 }
 
-async function checkStatus() {
-  try {
-    const r = await fetch(API + '/api/health');
-    const d = await r.json();
-    document.getElementById('statusDot').style.background = 'var(--accent3)';
-    document.getElementById('statusText').textContent = 'API online · v' + d.version;
-    document.getElementById('statSeason').textContent = d.current_season;
-    document.getElementById('healthStatus').textContent = d.status.toUpperCase();
-    document.getElementById('healthVersion').textContent = 'v' + d.version;
-    document.getElementById('healthSeason').textContent = d.current_season;
-    document.getElementById('healthEngine').textContent = d.scoring_engine.toUpperCase();
-  } catch(e) {
-    document.getElementById('statusDot').style.background = 'var(--bad)';
-    document.getElementById('statusText').textContent = 'API offline';
+// ── API HEALTH ──
+async function checkStatus(){
+  try{
+    const r=await fetch(API+'/api/health');
+    const d=await r.json();
+    document.getElementById('statusDot').style.background='var(--accent3)';
+    document.getElementById('statusText').textContent='API online · v'+d.version;
+    document.getElementById('statSeason').textContent=d.current_season;
+    document.getElementById('healthStatus').textContent=d.status.toUpperCase();
+    document.getElementById('healthVersion').textContent='v'+d.version;
+    document.getElementById('healthSeason').textContent=d.current_season;
+    document.getElementById('healthEngine').textContent=d.scoring_engine.toUpperCase();
+  }catch(e){
+    document.getElementById('statusDot').style.background='var(--bad)';
+    document.getElementById('statusText').textContent='API offline';
   }
 }
 
-async function loadAll() {
-  const pos = document.getElementById('draftPos').value;
-  const size = document.getElementById('leagueSize').value;
-  const minG = document.getElementById('minGames').value;
-  await Promise.all([loadTop10(), loadDraftBoard(pos, size, minG), loadWaiver(minG), loadFDR(), loadGW(), loadAllPlayers()]);
+async function loadAll(){
+  const pos=document.getElementById('draftPos').value;
+  const size=document.getElementById('leagueSize').value;
+  const minG=document.getElementById('minGames').value;
+  await Promise.all([loadTop10(),loadDraftBoard(pos,size,minG),loadWaiver(minG),loadFDR(),loadGW(),loadAllPlayers()]);
 }
 
-async function loadAllPlayers() {
-  try {
-    const r = await fetch(API + '/api/players/?min_games=1');
-    const data = await r.json();
-    if (Array.isArray(data)) allPlayers = data;
-  } catch(e) {
-    if (allDraftPlayers.length) allPlayers = allDraftPlayers;
+async function loadAllPlayers(){
+  try{
+    const r=await fetch(API+'/api/players/?min_games=1');
+    const data=await r.json();
+    if(Array.isArray(data))allPlayers=data;
+  }catch(e){if(allDraftPlayers.length)allPlayers=allDraftPlayers;}
+}
+
+// ── CSV IMPORT ──
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragover');
+  const file=e.dataTransfer.files[0];
+  if(file&&file.name.endsWith('.csv'))handleCSV(file);
+}
+
+function handleCSV(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    parseFantraxCSV(e.target.result);
+  };
+  reader.readAsText(file);
+}
+
+function parseFantraxCSV(text){
+  const lines=text.trim().split('\n');
+  const headers=lines[0].replace(/"/g,'').split(',').map(h=>h.trim());
+  const idxStatus=headers.indexOf('Status');
+  const idxPlayer=headers.indexOf('Player');
+  const idxTeam=headers.indexOf('Team');
+  const idxPos=headers.indexOf('Position');
+  const idxFpts=headers.indexOf('FPts');
+  const idxFpg=headers.indexOf('FP/G');
+  const idxRank=headers.indexOf('RkOv');
+  const idxOpp=headers.indexOf('Opponent');
+
+  if(idxStatus<0||idxPlayer<0){
+    document.getElementById('csvStatus').innerHTML='<div class="error-msg">CSV format not recognised. Make sure you export from Fantrax Players page.</div>';
+    return;
   }
+
+  fantraxData={};
+  leagueRosters={};
+  mySquadNames=new Set();
+
+  for(let i=1;i<lines.length;i++){
+    const vals=lines[i].match(/(".*?"|[^,]+|(?<=,)(?=,)|(?<=,)$|^(?=,))/g)||[];
+    const clean=vals.map(v=>v.replace(/^"|"$/g,'').trim());
+    const status=clean[idxStatus]||'';
+    const player=clean[idxPlayer]||'';
+    if(!player)continue;
+
+    fantraxData[player]={
+      status,
+      fantraxPts:parseFloat(clean[idxFpts])||0,
+      fpg:parseFloat(clean[idxFpg])||0,
+      rank:parseInt(clean[idxRank])||999,
+      team:clean[idxTeam]||'',
+      pos:clean[idxPos]||'',
+      opponent:clean[idxOpp]||''
+    };
+
+    if(status===MY_CODE)mySquadNames.add(player);
+    if(!leagueRosters[status])leagueRosters[status]=[];
+    leagueRosters[status].push({name:player,...fantraxData[player]});
+  }
+
+  const mySquadCount=mySquadNames.size;
+  document.getElementById('statSquad').textContent=mySquadCount;
+
+  // Show loaded banner
+  const owners=Object.keys(leagueRosters).filter(s=>s!=='FA'&&s!=='WW');
+  document.getElementById('csvStatus').innerHTML=`
+    <div class="csv-loaded">
+      <div>✅</div>
+      <div>
+        <div class="csv-info">CSV loaded — ${file ? file.name : 'Fantrax data'}</div>
+        <div class="csv-stats">${mySquadCount} players on my squad · ${owners.length} teams · ${(leagueRosters.FA||[]).length} free agents</div>
+      </div>
+      <button class="btn secondary" onclick="document.getElementById('csvInput').click()" style="margin-left:auto">Replace</button>
+    </div>`;
+
+  renderMySquad();
+  renderLeagueRosters();
+  // Re-render draft/waiver with owner info
+  renderDraftTable();
+  renderWaiverCards();
 }
 
-async function loadTop10() {
-  const el = document.getElementById('top10Container');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-  try {
-    const r = await fetch(API + '/api/players/top?n=10');
-    const players = await r.json();
-    document.getElementById('statTotal').textContent = '439';
-    if (players.length) {
-      document.getElementById('statTopScore').textContent = players[0].fantrax_score_per90?.toFixed(1);
-      document.getElementById('statTopName').textContent = players[0].name + ' · ' + players[0].team;
-    }
-    el.innerHTML = `<div class="table-wrap"><table>
-      <thead><tr><th>#</th><th>Player</th><th>Pos</th><th>Team</th><th>Score/90</th><th>Goals</th><th>Assists</th><th>xG/90</th><th>Status</th></tr></thead>
-      <tbody>${players.map((p,i) => `<tr>
-        <td class="pick-num">${i+1}</td>
-        <td class="player-name">${p.name}</td>
-        <td><span class="pos-badge pos-${p.position}">${p.position}</span></td>
-        <td style="color:var(--muted);font-size:0.8rem">${p.team}</td>
-        <td class="score-cell" style="color:var(--accent)">${p.fantrax_score_per90?.toFixed(2)}</td>
-        <td>${p.goals}</td><td>${p.assists}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:0.8rem">${p.xg_per90?.toFixed(2)}</td>
-        <td class="status-${p.status}">${statusLabel(p.status)}</td>
-      </tr>`).join('')}</tbody>
-    </table></div>`;
-  } catch(e) { el.innerHTML = '<div class="error-msg">Failed: ' + e.message + '</div>'; }
-}
+// ── MY SQUAD ──
+function renderMySquad(){
+  const el=document.getElementById('mySquadContainer');
+  const squad=leagueRosters[MY_CODE]||[];
+  if(!squad.length){el.innerHTML='<div class="empty">No squad data found for AM in this CSV</div>';return;}
 
-async function loadDraftBoard(pos, size, minG) {
-  const el = document.getElementById('draftContainer');
-  if (!pos) { el.innerHTML = '<div class="empty">Enter your draft position above and click Load Data</div>'; return; }
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Loading draft board...</div>';
-  try {
-    let url = `${API}/api/players/draft-board?draft_position=${pos}&league_size=${size}`;
-    if (minG) url += `&min_games=${minG}`;
-    const r = await fetch(url);
-    const d = await r.json();
-    allDraftPlayers = d.players || [];
-    if (!allPlayers.length) allPlayers = allDraftPlayers;
-    document.getElementById('statPicks').textContent = d.your_picks?.length || '—';
-    document.getElementById('statPickSub').textContent = `picks in ${size}-team draft`;
-    renderDraftTable();
-  } catch(e) { el.innerHTML = '<div class="error-msg">Failed: ' + e.message + '</div>'; }
-}
+  // Try to match with API stats
+  const enriched=squad.map(p=>{
+    const apiPlayer=findApiPlayer(p.name);
+    return {...p,...(apiPlayer||{})};
+  }).sort((a,b)=>(b.fantrax_score_per90||0)-(a.fantrax_score_per90||0));
 
-function renderDraftTable() {
-  const el = document.getElementById('draftContainer');
-  let players = allDraftPlayers;
-  if (draftFilter !== 'ALL') players = players.filter(p => p.position === draftFilter);
-  if (showMyPicksOnly) players = players.filter(p => p.is_your_pick);
-  if (draftSearchTerm) players = players.filter(p => p.name.toLowerCase().includes(draftSearchTerm) || p.team?.toLowerCase().includes(draftSearchTerm));
-  if (!players.length) { el.innerHTML = '<div class="empty">No players match filters</div>'; return; }
-  el.innerHTML = `<div class="table-wrap"><table>
-    <thead><tr><th>Rank</th><th>Player</th><th>Pos</th><th>Team</th><th>Score/90</th><th>Goals</th><th>Assists</th><th>xG/90</th><th>xA/90</th><th>Mins</th><th>FDR</th><th>£</th><th>Status</th><th>Round</th></tr></thead>
-    <tbody>${players.map(p => `<tr class="${p.is_your_pick?'your-pick':''}">
-      <td class="pick-num">${p.overall_pick}</td>
-      <td class="player-name">${p.name}${p.is_your_pick?'<span class="your-pick-badge">YOUR PICK</span>':''}</td>
-      <td><span class="pos-badge pos-${p.position}">${p.position}</span></td>
-      <td style="color:var(--muted);font-size:0.8rem">${p.team}</td>
-      <td class="score-cell" style="color:${p.is_your_pick?'var(--accent)':'var(--text)'}">${p.fantrax_score_per90?.toFixed(2)}</td>
-      <td>${p.goals}</td><td>${p.assists}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xa_per90?.toFixed(2)}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.minutes}</td>
+  el.innerHTML=`<div class="table-wrap"><table>
+    <thead><tr><th>Player</th><th>Pos</th><th>PL Team</th><th>Score/90</th><th>Fantrax Pts</th><th>FP/G</th><th>Goals</th><th>Assists</th><th>xG/90</th><th>FDR</th><th>Status</th></tr></thead>
+    <tbody>${enriched.map(p=>`<tr class="my-squad">
+      <td class="player-name">${p.name}<span class="my-squad-badge">MY SQUAD</span></td>
+      <td><span class="pos-badge pos-${posClass(p.position||p.pos)}">${p.position||p.pos}</span></td>
+      <td style="color:var(--muted);font-size:0.8rem">${p.team||p.pl_team||'—'}</td>
+      <td class="score-cell" style="color:var(--accent3)">${p.fantrax_score_per90?.toFixed(2)||'—'}</td>
+      <td style="font-family:'DM Mono',monospace">${p.fantraxPts||'—'}</td>
+      <td style="font-family:'DM Mono',monospace">${p.fpg||'—'}</td>
+      <td>${p.goals??'—'}</td>
+      <td>${p.assists??'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)||'—'}</td>
       <td>${fdrBar(p.fdr_avg5)}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--muted)">£${p.price}m</td>
-      <td class="status-${p.status}">${statusLabel(p.status)}</td>
-      <td><span class="round-badge">R${p.round}</span></td>
+      <td class="status-${p.status_fit||'a'}">${statusLabel(p.status_fit||'a')}</td>
     </tr>`).join('')}</tbody>
   </table></div>`;
 }
 
-function setDraftFilter(pos, btn) {
-  draftFilter = pos;
-  document.querySelectorAll('#tab-draft .filter-btn').forEach(b => { if (b.id !== 'myPicksBtn') b.classList.remove('active'); });
+function findApiPlayer(fantraxName){
+  if(!allPlayers.length)return null;
+  const fn=fantraxName.toLowerCase().replace(/[^a-z]/g,'');
+  return allPlayers.find(p=>{
+    const an=(p.full_name||p.name||'').toLowerCase().replace(/[^a-z]/g,'');
+    const sn=(p.name||'').toLowerCase().replace(/[^a-z]/g,'');
+    return an.includes(fn)||fn.includes(sn)||sn.includes(fn)||
+      an.slice(0,8)===fn.slice(0,8);
+  })||null;
+}
+
+// ── LEAGUE ROSTERS ──
+function renderLeagueRosters(){
+  if(!Object.keys(leagueRosters).length)return;
+  document.getElementById('leagueUploadPrompt').style.display='none';
+  document.getElementById('leagueContainer').style.display='block';
+
+  const teams=Object.keys(leagueRosters).filter(s=>s!=='FA'&&s!=='WW').sort((a,b)=>a===MY_CODE?-1:b===MY_CODE?1:0);
+  const tabsEl=document.getElementById('teamTabs');
+  tabsEl.innerHTML=teams.map((t,i)=>`
+    <button class="team-tab-btn ${t===MY_CODE?'me':''} ${i===0?'active':''}" onclick="showTeamRoster('${t}',this)">
+      ${t} — ${OWNER_NAMES[t]||t}
+    </button>`).join('');
+
+  showTeamRoster(teams[0],tabsEl.querySelector('.active'));
+}
+
+function showTeamRoster(code,btn){
+  document.querySelectorAll('.team-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const players=(leagueRosters[code]||[]);
+  const enriched=players.map(p=>({...p,...(findApiPlayer(p.name)||{})}))
+    .sort((a,b)=>(b.fantrax_score_per90||0)-(a.fantrax_score_per90||0));
+
+  const isMe=code===MY_CODE;
+  document.getElementById('teamRosterContainer').innerHTML=`
+    <div style="margin-bottom:1rem;font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--muted)">
+      ${OWNER_NAMES[code]||code}'s squad — ${players.length} players
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Player</th><th>Pos</th><th>PL Team</th><th>Score/90</th><th>Fantrax Pts</th><th>FP/G</th><th>Goals</th><th>Assists</th><th>xG/90</th><th>FDR</th></tr></thead>
+      <tbody>${enriched.map(p=>`<tr class="${isMe?'my-squad':''}">
+        <td class="player-name">${p.name}</td>
+        <td><span class="pos-badge pos-${posClass(p.position||p.pos)}">${p.position||p.pos}</span></td>
+        <td style="color:var(--muted);font-size:0.8rem">${p.team||'—'}</td>
+        <td class="score-cell" style="color:${isMe?'var(--accent3)':'var(--text)'}">${p.fantrax_score_per90?.toFixed(2)||'—'}</td>
+        <td style="font-family:'DM Mono',monospace">${p.fantraxPts||'—'}</td>
+        <td style="font-family:'DM Mono',monospace">${p.fpg||'—'}</td>
+        <td>${p.goals??'—'}</td>
+        <td>${p.assists??'—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)||'—'}</td>
+        <td>${fdrBar(p.fdr_avg5)}</td>
+      </tr>`).join('')}
+    </tbody></table></div>`;
+}
+
+// ── TOP 10 ──
+async function loadTop10(){
+  const el=document.getElementById('top10Container');
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try{
+    const r=await fetch(API+'/api/players/top?n=10');
+    const players=await r.json();
+    document.getElementById('statTotal').textContent='439';
+    if(players.length){
+      document.getElementById('statTopScore').textContent=players[0].fantrax_score_per90?.toFixed(1);
+      document.getElementById('statTopName').textContent=players[0].name+' · '+players[0].team;
+    }
+    el.innerHTML=`<div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Player</th><th>Pos</th><th>Team</th><th>Score/90</th><th>Goals</th><th>Assists</th><th>xG/90</th><th>Owner</th><th>Status</th></tr></thead>
+      <tbody>${players.map((p,i)=>{
+        const owner=getOwner(p.name);
+        const isMe=owner===MY_CODE;
+        return `<tr class="${isMe?'my-squad':''}">
+          <td class="pick-num">${i+1}</td>
+          <td class="player-name">${p.name}${isMe?'<span class="my-squad-badge">MINE</span>':''}</td>
+          <td><span class="pos-badge pos-${p.position}">${p.position}</span></td>
+          <td style="color:var(--muted);font-size:0.8rem">${p.team}</td>
+          <td class="score-cell" style="color:var(--accent)">${p.fantrax_score_per90?.toFixed(2)}</td>
+          <td>${p.goals}</td><td>${p.assists}</td>
+          <td style="font-family:'DM Mono',monospace;font-size:0.8rem">${p.xg_per90?.toFixed(2)}</td>
+          <td>${owner?`<span class="owner-badge">${owner}${owner===MY_CODE?' 👤':''}</span>`:''}</td>
+          <td class="status-${p.status}">${statusLabel(p.status)}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+  }catch(e){el.innerHTML='<div class="error-msg">Failed: '+e.message+'</div>';}
+}
+
+// ── DRAFT BOARD ──
+async function loadDraftBoard(pos,size,minG){
+  const el=document.getElementById('draftContainer');
+  if(!pos){el.innerHTML='<div class="empty">Enter your draft position above and click Load Data</div>';return;}
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading draft board...</div>';
+  try{
+    let url=`${API}/api/players/draft-board?draft_position=${pos}&league_size=${size}`;
+    if(minG)url+=`&min_games=${minG}`;
+    const r=await fetch(url);
+    const d=await r.json();
+    allDraftPlayers=d.players||[];
+    if(!allPlayers.length)allPlayers=allDraftPlayers;
+    renderDraftTable();
+  }catch(e){el.innerHTML='<div class="error-msg">Failed: '+e.message+'</div>';}
+}
+
+function renderDraftTable(){
+  const el=document.getElementById('draftContainer');
+  let players=allDraftPlayers;
+  if(draftFilter!=='ALL')players=players.filter(p=>p.position===draftFilter);
+  if(showMyPicksOnly)players=players.filter(p=>p.is_your_pick);
+  if(draftSearchTerm)players=players.filter(p=>p.name.toLowerCase().includes(draftSearchTerm)||p.team?.toLowerCase().includes(draftSearchTerm));
+  if(!players.length){el.innerHTML='<div class="empty">No players match filters</div>';return;}
+  el.innerHTML=`<div class="table-wrap"><table>
+    <thead><tr><th>Rank</th><th>Player</th><th>Pos</th><th>Team</th><th>Score/90</th><th>Goals</th><th>Assists</th><th>xG/90</th><th>xA/90</th><th>Mins</th><th>FDR</th><th>Owner</th><th>Status</th><th>Round</th></tr></thead>
+    <tbody>${players.map(p=>{
+      const owner=getOwner(p.name);
+      const isMe=mySquadNames.has(p.name);
+      return `<tr class="${p.is_your_pick?'your-pick':''} ${isMe?'my-squad':''}">
+        <td class="pick-num">${p.overall_pick}</td>
+        <td class="player-name">${p.name}${p.is_your_pick?'<span class="your-pick-badge">DRAFT PICK</span>':''}${isMe?'<span class="my-squad-badge">MINE</span>':''}</td>
+        <td><span class="pos-badge pos-${p.position}">${p.position}</span></td>
+        <td style="color:var(--muted);font-size:0.8rem">${p.team}</td>
+        <td class="score-cell" style="color:${isMe?'var(--accent3)':p.is_your_pick?'var(--accent)':'var(--text)'}">${p.fantrax_score_per90?.toFixed(2)}</td>
+        <td>${p.goals}</td><td>${p.assists}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xa_per90?.toFixed(2)}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.minutes}</td>
+        <td>${fdrBar(p.fdr_avg5)}</td>
+        <td>${owner?`<span class="owner-badge">${owner}</span>`:''}</td>
+        <td class="status-${p.status}">${statusLabel(p.status)}</td>
+        <td><span class="round-badge">R${p.round}</span></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+}
+
+function setDraftFilter(pos,btn){
+  draftFilter=pos;
+  document.querySelectorAll('#tab-draft .filter-btn').forEach(b=>{if(b.id!=='myPicksBtn')b.classList.remove('active');});
   btn.classList.add('active');
   renderDraftTable();
 }
-function toggleMyPicks(btn) { showMyPicksOnly = !showMyPicksOnly; btn.classList.toggle('active', showMyPicksOnly); renderDraftTable(); }
-function filterDraftSearch(val) { draftSearchTerm = val.toLowerCase(); renderDraftTable(); }
+function toggleMyPicks(btn){showMyPicksOnly=!showMyPicksOnly;btn.classList.toggle('active',showMyPicksOnly);renderDraftTable();}
+function filterDraftSearch(val){draftSearchTerm=val.toLowerCase();renderDraftTable();}
 
-async function loadWaiver(minG) {
-  const el = document.getElementById('waiverContainer');
-  el.innerHTML = '<div class="loading" style="grid-column:1/-1"><div class="spinner"></div>Loading...</div>';
-  try {
-    let url = API + '/api/players/waiver-wire';
-    if (minG) url += `?min_games=${minG}`;
-    const r = await fetch(url);
-    allWaiverPlayers = await r.json();
+// ── WAIVER ──
+async function loadWaiver(minG){
+  const el=document.getElementById('waiverContainer');
+  el.innerHTML='<div class="loading" style="grid-column:1/-1"><div class="spinner"></div>Loading...</div>';
+  try{
+    let url=API+'/api/players/waiver-wire';
+    if(minG)url+=`?min_games=${minG}`;
+    const r=await fetch(url);
+    allWaiverPlayers=await r.json();
     renderWaiverCards();
-  } catch(e) { el.innerHTML = '<div class="error-msg" style="grid-column:1/-1">Failed: ' + e.message + '</div>'; }
+  }catch(e){el.innerHTML='<div class="error-msg" style="grid-column:1/-1">Failed: '+e.message+'</div>';}
 }
 
-function renderWaiverCards() {
-  const el = document.getElementById('waiverContainer');
-  let players = allWaiverPlayers;
-  if (waiverFilter !== 'ALL') players = players.filter(p => p.position === waiverFilter);
-  if (waiverSearchTerm) players = players.filter(p => p.name.toLowerCase().includes(waiverSearchTerm) || p.team?.toLowerCase().includes(waiverSearchTerm));
-  players = players.slice(0, 40);
-  if (!players.length) { el.innerHTML = '<div class="empty" style="grid-column:1/-1">No players found</div>'; return; }
-  el.innerHTML = players.map(p => `
-    <div class="player-card">
+function renderWaiverCards(){
+  const el=document.getElementById('waiverContainer');
+  const faOnly=document.getElementById('faOnlyCheck')?.checked;
+  let players=allWaiverPlayers;
+  if(waiverFilter!=='ALL')players=players.filter(p=>p.position===waiverFilter);
+  if(waiverSearchTerm)players=players.filter(p=>p.name.toLowerCase().includes(waiverSearchTerm)||p.team?.toLowerCase().includes(waiverSearchTerm));
+  if(faOnly&&Object.keys(fantraxData).length){
+    players=players.filter(p=>{
+      const owner=getOwner(p.name);
+      return !owner||owner==='FA'||owner==='WW';
+    });
+  }
+  players=players.slice(0,48);
+  if(!players.length){el.innerHTML='<div class="empty" style="grid-column:1/-1">No players found</div>';return;}
+  el.innerHTML=players.map(p=>{
+    const owner=getOwner(p.name);
+    const ownerLabel=owner&&owner!=='FA'?`<span class="owner-badge">${owner}</span>`:'';
+    return `<div class="player-card">
       <div class="card-header">
-        <div><div class="player-name" style="font-size:0.95rem">${p.name}</div><div style="font-size:0.75rem;color:var(--muted);margin-top:2px">${p.team}</div></div>
+        <div><div class="player-name" style="font-size:0.95rem">${p.name}${ownerLabel}</div><div style="font-size:0.75rem;color:var(--muted);margin-top:2px">${p.team}</div></div>
         <span class="pos-badge pos-${p.position}">${p.position}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:flex-end">
@@ -450,118 +693,113 @@ function renderWaiverCards() {
         <div class="card-stat">xG/90 <span>${p.xg_per90?.toFixed(2)}</span></div><div class="card-stat">xA/90 <span>${p.xa_per90?.toFixed(2)}</span></div>
         <div class="card-stat">Mins <span>${p.minutes}</span></div><div class="card-stat">£<span>${p.price}m</span></div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
-function setWaiverFilter(pos, btn) {
-  waiverFilter = pos;
-  document.querySelectorAll('#tab-waiver .filter-btn').forEach(b => b.classList.remove('active'));
+function setWaiverFilter(pos,btn){
+  waiverFilter=pos;
+  document.querySelectorAll('#tab-waiver .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderWaiverCards();
 }
-function filterWaiverSearch(val) { waiverSearchTerm = val.toLowerCase(); renderWaiverCards(); }
+function filterWaiverSearch(val){waiverSearchTerm=val.toLowerCase();renderWaiverCards();}
 
-let fdrLoaded = false;
-async function loadFDR() {
-  if (fdrLoaded) return;
-  const el = document.getElementById('fdrContainer');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Loading FDR...</div>';
-  try {
-    const r = await fetch(API + '/api/fixtures/fdr');
-    const data = await r.json();
-    fdrLoaded = true;
+// ── FDR ──
+let fdrLoaded=false;
+async function loadFDR(){
+  if(fdrLoaded)return;
+  const el=document.getElementById('fdrContainer');
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading FDR...</div>';
+  try{
+    const r=await fetch(API+'/api/fixtures/fdr');
+    const data=await r.json();
+    fdrLoaded=true;
     renderFDR(data);
-  } catch(e) { el.innerHTML = '<div class="error-msg">Failed: ' + e.message + '</div>'; }
+  }catch(e){el.innerHTML='<div class="error-msg">Failed: '+e.message+'</div>';}
 }
 
-function renderFDR(data) {
-  const el = document.getElementById('fdrContainer');
-  const teams = Array.isArray(data) ? data : Object.entries(data).map(([k,v]) => ({team:k,...v}));
-  if (!teams.length) { el.innerHTML = '<div class="empty">No fixture data</div>'; return; }
-  const maxGWs = Math.max(...teams.map(t => t.fixtures?.length || 0));
-  const gwHeaders = Array.from({length:maxGWs}, (_,i) => `<th style="text-align:center">GW+${i+1}</th>`).join('');
-  el.innerHTML = `
+function renderFDR(data){
+  const el=document.getElementById('fdrContainer');
+  const teams=Array.isArray(data)?data:Object.entries(data).map(([k,v])=>({team:k,...v}));
+  if(!teams.length){el.innerHTML='<div class="empty">No fixture data</div>';return;}
+  const maxGWs=Math.max(...teams.map(t=>t.fixtures?.length||0));
+  const gwHeaders=Array.from({length:maxGWs},(_,i)=>`<th style="text-align:center">GW+${i+1}</th>`).join('');
+  el.innerHTML=`
     <div class="section-title"><span class="accent">Fixture</span> Difficulty Rating</div>
     <div class="table-wrap"><table>
       <thead><tr><th>Team</th>${gwHeaders}<th>Avg FDR</th></tr></thead>
-      <tbody>${[...teams].sort((a,b) => (a.avg_fdr||3)-(b.avg_fdr||3)).map(t => `
+      <tbody>${[...teams].sort((a,b)=>(a.avg_fdr||3)-(b.avg_fdr||3)).map(t=>`
         <tr>
           <td class="fdr-team">${t.team}</td>
-          ${(t.fixtures||[]).map(f => `<td class="fdr-cell fdr-cell-${f.fdr}">${f.opponent} ${f.is_home?'H':'A'}</td>`).join('')}
+          ${(t.fixtures||[]).map(f=>`<td class="fdr-cell fdr-cell-${f.fdr}">${f.opponent} ${f.is_home?'H':'A'}</td>`).join('')}
           <td style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--muted)">${t.avg_fdr?.toFixed(1)}</td>
         </tr>`).join('')}
       </tbody>
     </table></div>`;
 }
 
-async function loadGW() {
-  try {
-    const r = await fetch(API + '/api/fixtures/current-gameweek');
-    const d = await r.json();
-    document.getElementById('statGW').textContent = d.gameweek || '—';
-    document.getElementById('statGWSub').textContent = d.name || '';
-  } catch(e) {}
+async function loadGW(){
+  try{
+    const r=await fetch(API+'/api/fixtures/current-gameweek');
+    const d=await r.json();
+    document.getElementById('statGW').textContent=d.gameweek||'—';
+    document.getElementById('statGWSub').textContent=d.name||'';
+  }catch(e){}
 }
 
-async function testAlert(type) {
-  const el = document.getElementById('alertResult');
-  el.innerHTML = '<div class="loading" style="padding:0.5rem 0"><div class="spinner" style="width:20px;height:20px"></div></div>';
-  try {
-    const r = await fetch(`${API}/api/alerts/test/${type}`, {method:'POST'});
-    const d = await r.json();
-    el.innerHTML = `<div style="background:rgba(127,255,107,0.1);border:1px solid rgba(127,255,107,0.3);color:var(--accent3);border-radius:8px;padding:0.8rem 1.2rem;font-family:'DM Mono',monospace;font-size:0.8rem">✓ ${JSON.stringify(d)}</div>`;
-  } catch(e) { el.innerHTML = `<div class="error-msg">Failed: ${e.message}</div>`; }
+async function testAlert(type){
+  const el=document.getElementById('alertResult');
+  el.innerHTML='<div class="loading" style="padding:0.5rem 0"><div class="spinner" style="width:20px;height:20px"></div></div>';
+  try{
+    const r=await fetch(`${API}/api/alerts/test/${type}`,{method:'POST'});
+    const d=await r.json();
+    el.innerHTML=`<div style="background:rgba(127,255,107,0.1);border:1px solid rgba(127,255,107,0.3);color:var(--accent3);border-radius:8px;padding:0.8rem 1.2rem;font-family:'DM Mono',monospace;font-size:0.8rem">✓ ${JSON.stringify(d)}</div>`;
+  }catch(e){el.innerHTML=`<div class="error-msg">Failed: ${e.message}</div>`;}
 }
 
 // ── TRADE ANALYSER ──
-function getPlayerPool() {
-  return allPlayers.length ? allPlayers : allDraftPlayers.length ? allDraftPlayers : allWaiverPlayers;
-}
+function getPlayerPool(){return allPlayers.length?allPlayers:allDraftPlayers.length?allDraftPlayers:allWaiverPlayers;}
 
-function tradeSearch(side, val) {
-  const dd = document.getElementById('dd-' + side);
-  if (!val || val.length < 2) { dd.classList.remove('open'); return; }
-  const pool = getPlayerPool();
-  if (!pool.length) {
-    dd.innerHTML = '<div class="trade-dropdown-item" style="color:var(--muted)">Load data first from settings above</div>';
-    dd.classList.add('open');
-    return;
-  }
-  const results = pool.filter(p => p.name.toLowerCase().includes(val.toLowerCase()) || p.team?.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
-  if (!results.length) { dd.classList.remove('open'); return; }
-  dd.innerHTML = results.map(p => `
-    <div class="trade-dropdown-item" onclick="selectTradePlayer('${side}','${p.name.replace(/'/g,"\\'")}')">
-      <span><span class="pos-badge pos-${p.position}" style="margin-right:6px">${p.position}</span>${p.name} <span style="color:var(--muted);font-size:0.75rem">· ${p.team}</span></span>
+function tradeSearch(side,val){
+  const dd=document.getElementById('dd-'+side);
+  if(!val||val.length<2){dd.classList.remove('open');return;}
+  const pool=getPlayerPool();
+  if(!pool.length){dd.innerHTML='<div class="trade-dropdown-item" style="color:var(--muted)">Load data first</div>';dd.classList.add('open');return;}
+  const results=pool.filter(p=>p.name.toLowerCase().includes(val.toLowerCase())||p.team?.toLowerCase().includes(val.toLowerCase())).slice(0,8);
+  if(!results.length){dd.classList.remove('open');return;}
+  dd.innerHTML=results.map(p=>{
+    const owner=getOwner(p.name);
+    return `<div class="trade-dropdown-item" onclick="selectTradePlayer('${side}','${p.name.replace(/'/g,"\\'")}')">
+      <span><span class="pos-badge pos-${p.position}" style="margin-right:6px">${p.position}</span>${p.name} <span style="color:var(--muted);font-size:0.75rem">· ${p.team}</span>${owner?`<span class="owner-badge" style="margin-left:4px">${owner}</span>`:''}</span>
       <span class="dd-score">${p.fantrax_score_per90?.toFixed(2)}/90</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   dd.classList.add('open');
 }
 
-function selectTradePlayer(side, name) {
-  const pool = getPlayerPool();
-  const player = pool.find(p => p.name === name);
-  if (!player) return;
-  if (!tradeSide[side].find(p => p.name === name)) tradeSide[side].push(player);
-  document.getElementById('dd-' + side).classList.remove('open');
-  document.getElementById('input-' + side).value = '';
+function selectTradePlayer(side,name){
+  const pool=getPlayerPool();
+  const player=pool.find(p=>p.name===name);
+  if(!player)return;
+  if(!tradeSide[side].find(p=>p.name===name))tradeSide[side].push(player);
+  document.getElementById('dd-'+side).classList.remove('open');
+  document.getElementById('input-'+side).value='';
   renderTradeSelected();
-  document.getElementById('tradeResult').innerHTML = '';
+  document.getElementById('tradeResult').innerHTML='';
 }
 
-function removeTradePlayer(side, name) {
-  tradeSide[side] = tradeSide[side].filter(p => p.name !== name);
+function removeTradePlayer(side,name){
+  tradeSide[side]=tradeSide[side].filter(p=>p.name!==name);
   renderTradeSelected();
-  document.getElementById('tradeResult').innerHTML = '';
+  document.getElementById('tradeResult').innerHTML='';
 }
 
-function renderTradeSelected() {
-  ['give','receive'].forEach(side => {
-    const el = document.getElementById('sel-' + side);
-    if (!tradeSide[side].length) {
-      el.innerHTML = '<div style="color:var(--muted);font-family:\'DM Mono\',monospace;font-size:0.75rem">No players selected</div>';
-      return;
-    }
-    el.innerHTML = tradeSide[side].map(p => `
+function renderTradeSelected(){
+  ['give','receive'].forEach(side=>{
+    const el=document.getElementById('sel-'+side);
+    if(!tradeSide[side].length){el.innerHTML='<div style="color:var(--muted);font-family:\'DM Mono\',monospace;font-size:0.75rem">No players selected</div>';return;}
+    el.innerHTML=tradeSide[side].map(p=>`
       <div class="trade-chip">
         <span><span class="pos-badge pos-${p.position}" style="margin-right:6px">${p.position}</span><strong>${p.name}</strong> <span style="color:var(--muted);font-size:0.78rem">· ${p.team}</span></span>
         <button onclick="removeTradePlayer('${side}','${p.name.replace(/'/g,"\\'")}')">×</button>
@@ -569,77 +807,72 @@ function renderTradeSelected() {
   });
 }
 
-function resetTrade() {
-  tradeSide = { give: [], receive: [] };
+function resetTrade(){
+  tradeSide={give:[],receive:[]};
   renderTradeSelected();
-  document.getElementById('tradeResult').innerHTML = '';
-  document.getElementById('input-give').value = '';
-  document.getElementById('input-receive').value = '';
+  document.getElementById('tradeResult').innerHTML='';
+  document.getElementById('input-give').value='';
+  document.getElementById('input-receive').value='';
 }
 
-function avg(players, key) {
-  if (!players.length) return 0;
-  return players.reduce((s,p) => s+(p[key]||0), 0) / players.length;
+function avg(players,key){
+  if(!players.length)return 0;
+  return players.reduce((s,p)=>s+(p[key]||0),0)/players.length;
 }
 
-function analyseTrade() {
-  const el = document.getElementById('tradeResult');
-  const give = tradeSide.give, recv = tradeSide.receive;
-  if (!give.length || !recv.length) {
-    el.innerHTML = '<div class="error-msg">Select at least one player on each side to analyse.</div>';
-    return;
-  }
+function analyseTrade(){
+  const el=document.getElementById('tradeResult');
+  const give=tradeSide.give,recv=tradeSide.receive;
+  if(!give.length||!recv.length){el.innerHTML='<div class="error-msg">Select at least one player on each side.</div>';return;}
 
-  const giveScore = avg(give,'fantrax_score_per90'), recvScore = avg(recv,'fantrax_score_per90');
-  const giveXG = avg(give,'xg_per90'),   recvXG = avg(recv,'xg_per90');
-  const giveXA = avg(give,'xa_per90'),   recvXA = avg(recv,'xa_per90');
-  const giveFDR = avg(give,'fdr_avg5'),  recvFDR = avg(recv,'fdr_avg5');
-  const giveForm = avg(give,'fpl_form'), recvForm = avg(recv,'fpl_form');
-  const giveFit = give.filter(p=>p.status==='a').length/give.length;
-  const recvFit = recv.filter(p=>p.status==='a').length/recv.length;
+  const giveScore=avg(give,'fantrax_score_per90'),recvScore=avg(recv,'fantrax_score_per90');
+  const giveXG=avg(give,'xg_per90'),recvXG=avg(recv,'xg_per90');
+  const giveXA=avg(give,'xa_per90'),recvXA=avg(recv,'xa_per90');
+  const giveFDR=avg(give,'fdr_avg5'),recvFDR=avg(recv,'fdr_avg5');
+  const giveForm=avg(give,'fpl_form'),recvForm=avg(recv,'fpl_form');
+  const giveFit=give.filter(p=>p.status==='a').length/give.length;
+  const recvFit=recv.filter(p=>p.status==='a').length/recv.length;
 
-  // Weighted composite score (higher = better)
-  const fdrGN = (6-giveFDR)/4, fdrRN = (6-recvFDR)/4;
-  const giveTotal = giveScore*0.40 + giveXG*10*0.15 + giveXA*10*0.10 + fdrGN*0.15 + giveForm*0.10 + giveFit*0.10;
-  const recvTotal = recvScore*0.40 + recvXG*10*0.15 + recvXA*10*0.10 + fdrRN*0.15 + recvForm*0.10 + recvFit*0.10;
-  const diff = recvTotal - giveTotal;
-  const pct = giveTotal > 0 ? Math.abs((diff/giveTotal)*100).toFixed(1) : 0;
-  const isWin = diff > 0.3, isLoss = diff < -0.3;
-  const vc = isWin?'verdict-win':isLoss?'verdict-loss':'verdict-even';
-  const vi = isWin?'✅':isLoss?'❌':'⚖️';
-  const vt = isWin?'ACCEPT TRADE':isLoss?'REJECT TRADE':'EVEN TRADE';
-  const vm = isWin?`You gain ${pct}% in overall value. This trade favours you.`
-    :isLoss?`You lose ${pct}% in overall value. This trade doesn't work in your favour.`
-    :'Both sides are roughly equal — consider positional need and upcoming fixtures.';
+  const fdrGN=(6-giveFDR)/4,fdrRN=(6-recvFDR)/4;
+  const giveTotal=giveScore*0.40+giveXG*10*0.15+giveXA*10*0.10+fdrGN*0.15+giveForm*0.10+giveFit*0.10;
+  const recvTotal=recvScore*0.40+recvXG*10*0.15+recvXA*10*0.10+fdrRN*0.15+recvForm*0.10+recvFit*0.10;
+  const diff=recvTotal-giveTotal;
+  const pct=giveTotal>0?Math.abs((diff/giveTotal)*100).toFixed(1):0;
+  const isWin=diff>0.3,isLoss=diff<-0.3;
+  const vc=isWin?'verdict-win':isLoss?'verdict-loss':'verdict-even';
+  const vi=isWin?'✅':isLoss?'❌':'⚖️';
+  const vt=isWin?'ACCEPT TRADE':isLoss?'REJECT TRADE':'EVEN TRADE';
+  const vm=isWin?`You gain ${pct}% overall value. This trade favours you.`
+    :isLoss?`You lose ${pct}% overall value. This trade doesn't work in your favour.`
+    :'Both sides are roughly equal — consider positional need and fixtures.';
 
-  const reasons = [];
-  if (recvScore > giveScore+0.3) reasons.push({icon:'📈',text:`<strong>${recv.map(p=>p.name).join(' + ')}</strong> scores <strong>${recvScore.toFixed(2)}</strong> pts/90 vs your <strong>${giveScore.toFixed(2)}</strong> — a clear Fantrax output upgrade.`});
-  else if (giveScore > recvScore+0.3) reasons.push({icon:'📉',text:`You're giving away <strong>${giveScore.toFixed(2)}</strong> pts/90 and only receiving <strong>${recvScore.toFixed(2)}</strong> — a Fantrax downgrade.`});
-  if (recvFDR < giveFDR-0.3) reasons.push({icon:'📅',text:`Better fixtures ahead for incoming players (FDR <strong>${recvFDR.toFixed(1)}</strong> vs <strong>${giveFDR.toFixed(1)}</strong>).`});
-  else if (giveFDR < recvFDR-0.3) reasons.push({icon:'📅',text:`Players you're giving have easier fixtures (FDR <strong>${giveFDR.toFixed(1)}</strong> vs <strong>${recvFDR.toFixed(1)}</strong>).`});
-  if (recvForm > giveForm+0.5) reasons.push({icon:'🔥',text:`Better recent form coming in: <strong>${recvForm.toFixed(1)}</strong> vs <strong>${giveForm.toFixed(1)}</strong>.`});
-  else if (giveForm > recvForm+0.5) reasons.push({icon:'🧊',text:`You're trading away in-form players (form <strong>${giveForm.toFixed(1)}</strong>) for out-of-form ones (<strong>${recvForm.toFixed(1)}</strong>).`});
-  if (recvXG > giveXG+0.03) reasons.push({icon:'⚽',text:`Higher goal threat incoming: xG/90 <strong>${recvXG.toFixed(3)}</strong> vs <strong>${giveXG.toFixed(3)}</strong>.`});
-  if (recvXA > giveXA+0.03) reasons.push({icon:'🎯',text:`Better assist potential: xA/90 <strong>${recvXA.toFixed(3)}</strong> vs <strong>${giveXA.toFixed(3)}</strong>.`});
-  const injR = recv.filter(p=>p.status!=='a'), injG = give.filter(p=>p.status!=='a');
-  if (injR.length) reasons.push({icon:'🏥',text:`Injury risk: <strong>${injR.map(p=>p.name).join(', ')}</strong> ${injR.length>1?'are':'is'} not fully fit.`});
-  if (injG.length) reasons.push({icon:'💉',text:`Moving on from <strong>${injG.map(p=>p.name).join(', ')}</strong> who ${injG.length>1?'are':'is'} not fully fit — good timing.`});
-  if (!reasons.length) reasons.push({icon:'⚖️',text:'Both sides match closely across all metrics. Base the decision on squad balance and position needs.'});
+  const reasons=[];
+  if(recvScore>giveScore+0.3)reasons.push({icon:'📈',text:`<strong>${recv.map(p=>p.name).join(' + ')}</strong> scores <strong>${recvScore.toFixed(2)}</strong> pts/90 vs your <strong>${giveScore.toFixed(2)}</strong> — a clear Fantrax upgrade.`});
+  else if(giveScore>recvScore+0.3)reasons.push({icon:'📉',text:`Giving away <strong>${giveScore.toFixed(2)}</strong> pts/90, receiving only <strong>${recvScore.toFixed(2)}</strong> — a downgrade.`});
+  if(recvFDR<giveFDR-0.3)reasons.push({icon:'📅',text:`Incoming players have easier fixtures (FDR <strong>${recvFDR.toFixed(1)}</strong> vs <strong>${giveFDR.toFixed(1)}</strong>).`});
+  else if(giveFDR<recvFDR-0.3)reasons.push({icon:'📅',text:`Players you're giving have easier upcoming fixtures (FDR <strong>${giveFDR.toFixed(1)}</strong> vs <strong>${recvFDR.toFixed(1)}</strong>).`});
+  if(recvForm>giveForm+0.5)reasons.push({icon:'🔥',text:`Better recent form coming in: <strong>${recvForm.toFixed(1)}</strong> vs <strong>${giveForm.toFixed(1)}</strong>.`});
+  else if(giveForm>recvForm+0.5)reasons.push({icon:'🧊',text:`Trading away in-form players (form <strong>${giveForm.toFixed(1)}</strong>) for out-of-form ones (<strong>${recvForm.toFixed(1)}</strong>).`});
+  if(recvXG>giveXG+0.03)reasons.push({icon:'⚽',text:`Higher goal threat: xG/90 <strong>${recvXG.toFixed(3)}</strong> vs <strong>${giveXG.toFixed(3)}</strong>.`});
+  if(recvXA>giveXA+0.03)reasons.push({icon:'🎯',text:`Better assist potential: xA/90 <strong>${recvXA.toFixed(3)}</strong> vs <strong>${giveXA.toFixed(3)}</strong>.`});
+  const injR=recv.filter(p=>p.status!=='a'),injG=give.filter(p=>p.status!=='a');
+  if(injR.length)reasons.push({icon:'🏥',text:`Injury risk: <strong>${injR.map(p=>p.name).join(', ')}</strong> not fully fit.`});
+  if(injG.length)reasons.push({icon:'💉',text:`Moving on from injured <strong>${injG.map(p=>p.name).join(', ')}</strong> — smart timing.`});
+  if(!reasons.length)reasons.push({icon:'⚖️',text:'Both sides match closely. Base the decision on squad balance and positional need.'});
 
-  const maxS = Math.max(giveScore,recvScore,0.1), maxXG = Math.max(giveXG,recvXG,0.01), maxXA = Math.max(giveXA,recvXA,0.01), maxF = Math.max(giveForm,recvForm,0.1);
-  const bars = [['Fantrax Score/90',giveScore,recvScore,maxS,v=>v.toFixed(2)],['xG per 90',giveXG,recvXG,maxXG,v=>v.toFixed(3)],['xA per 90',giveXA,recvXA,maxXA,v=>v.toFixed(3)],['FPL Form',giveForm,recvForm,maxF,v=>v.toFixed(1)],['Fitness %',giveFit*100,recvFit*100,100,v=>v.toFixed(0)+'%']];
-  const allInvolved = [...give.map(p=>({...p,side:'give'})),...recv.map(p=>({...p,side:'receive'}))];
+  const maxS=Math.max(giveScore,recvScore,0.1),maxXG=Math.max(giveXG,recvXG,0.01),maxXA=Math.max(giveXA,recvXA,0.01),maxF=Math.max(giveForm,recvForm,0.1);
+  const bars=[['Fantrax Score/90',giveScore,recvScore,maxS,v=>v.toFixed(2)],['xG per 90',giveXG,recvXG,maxXG,v=>v.toFixed(3)],['xA per 90',giveXA,recvXA,maxXA,v=>v.toFixed(3)],['FPL Form',giveForm,recvForm,maxF,v=>v.toFixed(1)],['Fitness %',giveFit*100,recvFit*100,100,v=>v.toFixed(0)+'%']];
+  const allInvolved=[...give.map(p=>({...p,side:'give'})),...recv.map(p=>({...p,side:'receive'}))];
 
-  el.innerHTML = `
+  el.innerHTML=`
     <div class="verdict-box ${vc}">
       <div class="verdict-icon">${vi}</div>
       <div class="verdict-title">${vt}</div>
       <div class="verdict-sub">${vm}</div>
     </div>
-
     <div class="section-title"><span class="accent">Score</span> Breakdown</div>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:2rem">
-      ${bars.map(([label,gv,rv,max,fmt]) => `
+      ${bars.map(([label,gv,rv,max,fmt])=>`
         <div style="margin-bottom:1rem">
           <div style="display:flex;justify-content:space-between;margin-bottom:5px">
             <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-transform:uppercase">${label}</span>
@@ -647,10 +880,10 @@ function analyseTrade() {
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
             <div style="background:var(--border);border-radius:3px;height:7px;display:flex;justify-content:flex-end;overflow:hidden">
-              <div style="height:7px;background:var(--bad);width:${Math.min((gv/max*100),100).toFixed(1)}%;border-radius:3px;transition:width 0.5s"></div>
+              <div style="height:7px;background:var(--bad);width:${Math.min(gv/max*100,100).toFixed(1)}%;border-radius:3px"></div>
             </div>
             <div style="background:var(--border);border-radius:3px;height:7px;overflow:hidden">
-              <div style="height:7px;background:var(--accent3);width:${Math.min((rv/max*100),100).toFixed(1)}%;border-radius:3px;transition:width 0.5s"></div>
+              <div style="height:7px;background:var(--accent3);width:${Math.min(rv/max*100,100).toFixed(1)}%;border-radius:3px"></div>
             </div>
           </div>
         </div>`).join('')}
@@ -659,19 +892,19 @@ function analyseTrade() {
         <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--accent3);padding-left:8px">▲ RECEIVING: ${recv.map(p=>p.name).join(' + ')}</div>
       </div>
     </div>
-
     <div class="section-title"><span class="accent">Player</span> Comparison</div>
     <div class="compare-grid" style="margin-bottom:2rem">
-      ${allInvolved.map(p => {
-        const ig = p.side==='give';
-        const col = ig?'var(--bad)':'var(--accent3)';
-        const lbl = ig?'📤 YOU GIVE':'📥 YOU RECEIVE';
+      ${allInvolved.map(p=>{
+        const ig=p.side==='give';
+        const col=ig?'var(--bad)':'var(--accent3)';
+        const lbl=ig?'📤 YOU GIVE':'📥 YOU RECEIVE';
+        const owner=getOwner(p.name);
         return `<div class="compare-card" style="border-color:${ig?'rgba(244,67,54,0.3)':'rgba(127,255,107,0.3)'}">
           <div class="compare-card-header">
             <div>
               <div style="font-size:0.65rem;font-family:'DM Mono',monospace;color:${col};text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${lbl}</div>
               <div style="font-weight:600">${p.name}</div>
-              <div style="font-size:0.75rem;color:var(--muted)">${p.team} · <span class="pos-badge pos-${p.position}">${p.position}</span></div>
+              <div style="font-size:0.75rem;color:var(--muted)">${p.team} · <span class="pos-badge pos-${p.position}">${p.position}</span>${owner?` · <span class="owner-badge">${OWNER_NAMES[owner]||owner}</span>`:''}</div>
             </div>
             <div style="text-align:right">
               <div style="font-family:'Bebas Neue',cursive;font-size:2rem;color:${col};line-height:1">${p.fantrax_score_per90?.toFixed(2)}</div>
@@ -679,34 +912,54 @@ function analyseTrade() {
             </div>
           </div>
           <div class="compare-rows">
-            ${[['Goals',p.goals],['Assists',p.assists],['xG/90',p.xg_per90?.toFixed(3)],['xA/90',p.xa_per90?.toFixed(3)],['Minutes',p.minutes],['FPL Form',p.fpl_form],['FDR Avg',p.fdr_avg5?.toFixed(1)],['Price','£'+p.price+'m'],['Status',statusLabel(p.status)]].map(([l,v]) => `
+            ${[['Goals',p.goals],['Assists',p.assists],['xG/90',p.xg_per90?.toFixed(3)],['xA/90',p.xa_per90?.toFixed(3)],['Minutes',p.minutes],['FPL Form',p.fpl_form],['FDR Avg',p.fdr_avg5?.toFixed(1)],['Price','£'+p.price+'m'],['Status',statusLabel(p.status)]].map(([l,v])=>`
               <div class="compare-row"><span class="cr-label">${l}</span><span class="cr-val" style="color:${col}">${v}</span></div>`).join('')}
           </div>
         </div>`;
       }).join('')}
     </div>
-
     <div class="section-title"><span class="accent">Key</span> Factors</div>
     <div class="reasons">
       ${reasons.map(r=>`<div class="reason-item"><span class="reason-icon">${r.icon}</span><span class="reason-text">${r.text}</span></div>`).join('')}
     </div>`;
 }
 
-function fdrBar(avg) {
-  const val = Math.round(avg||3);
+// ── HELPERS ──
+function getOwner(playerName){
+  if(!Object.keys(fantraxData).length)return null;
+  const entry=fantraxData[playerName];
+  if(entry)return entry.status;
+  // fuzzy match
+  const fn=playerName.toLowerCase().replace(/[^a-z]/g,'');
+  for(const[name,data] of Object.entries(fantraxData)){
+    const n=name.toLowerCase().replace(/[^a-z]/g,'');
+    if(n.slice(0,10)===fn.slice(0,10)||fn.slice(0,10)===n.slice(0,10))return data.status;
+  }
+  return null;
+}
+
+function posClass(pos){
+  if(!pos)return '';
+  if(pos==='G'||pos==='GK')return 'GK';
+  if(pos==='D'||pos==='DEF')return 'DEF';
+  if(pos==='M'||pos==='MID')return 'MID';
+  if(pos==='F'||pos==='FWD')return 'FWD';
+  return pos;
+}
+
+function fdrBar(avg){
+  const val=Math.round(avg||3);
   const colors=['','#1b5e20','#4caf50','#ff9800','#f44336','#7b1fa2'];
   return `<div class="fdr-bar">${[1,2,3,4,5].map(i=>`<div class="fdr-pip" style="background:${i<=val?colors[val]:'var(--border)'}"></div>`).join('')}</div>`;
 }
 
-function statusLabel(s) {
-  return {a:'✓ Fit',i:'✗ Injured',d:'? Doubt',u:'? Unknown',s:'— Sus',n:'— N/A'}[s]||s;
-}
+function statusLabel(s){return {a:'✓ Fit',i:'✗ Injured',d:'? Doubt',u:'? Unknown',s:'— Sus',n:'— N/A'}[s]||s;}
 
-document.addEventListener('click', e => {
-  if (!e.target.closest('.trade-search-wrap')) document.querySelectorAll('.trade-dropdown').forEach(d=>d.classList.remove('open'));
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.trade-search-wrap'))document.querySelectorAll('.trade-dropdown').forEach(d=>d.classList.remove('open'));
 });
 
-checkStatus(); loadTop10(); loadGW(); loadFDR(); loadAllPlayers();
+checkStatus();loadTop10();loadGW();loadFDR();loadAllPlayers();
 </script>
 </body>
 </html>
