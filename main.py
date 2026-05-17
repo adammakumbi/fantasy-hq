@@ -17,6 +17,9 @@ from routers import players, fixtures, alerts, waiver
 from services.fixture_manager import fetch_and_store_fixtures, load_fixtures
 from services.scheduler import start_scheduler, stop_scheduler
 
+from routers import fpl_proxy
+app.include_router(fpl_proxy.router)
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s"
