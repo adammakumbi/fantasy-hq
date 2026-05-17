@@ -13,12 +13,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import players, fixtures, alerts, waiver
+from routers import players, fixtures, alerts, waiver, fpl_proxy
 from services.fixture_manager import fetch_and_store_fixtures, load_fixtures
 from services.scheduler import start_scheduler, stop_scheduler
-
-from routers import fpl_proxy
-app.include_router(fpl_proxy.router)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -33,7 +30,6 @@ CURRENT_SEASON = os.getenv("CURRENT_SEASON", "2025-26")
 async def lifespan(app: FastAPI):
     logger.info("🚀 Fantasy HQ v2 starting...")
 
-    # Pre-load fixtures if not already stored
     if not load_fixtures(CURRENT_SEASON):
         logger.info(f"📅 Fetching fixtures for {CURRENT_SEASON}...")
         try:
@@ -58,14 +54,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-@app.get("/")
-async def serve_dashboard():
-    return FileResponse("static/index.html")
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -74,10 +62,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def serve_dashboard():
+    return FileResponse("static/index.html")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.include_router(players.router,  prefix="/api/players",  tags=["Players"])
 app.include_router(fixtures.router, prefix="/api/fixtures", tags=["Fixtures"])
 app.include_router(alerts.router,   prefix="/api/alerts",   tags=["Alerts"])
 app.include_router(waiver.router,   prefix="/api/waiver",   tags=["Waiver"])
+app.include_router(fpl_proxy.router)
 
 
 @app.get("/api/health")

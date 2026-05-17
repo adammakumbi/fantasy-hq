@@ -1061,7 +1061,7 @@ async function loadAnalysis(){
   analysisLoaded=true;
   // Fetch raw FPL data for set pieces and xGA
   try{
-    const r=await fetch('https://fantasy.premierleague.com/api/bootstrap-static/');
+    const r=await fetch(API+'/api/fpl/bootstrap');
     const d=await r.json();
     fplRawPlayers=d.elements||[];
     const teams=d.teams||[];
