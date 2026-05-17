@@ -581,11 +581,11 @@ function renderMySquad(){
       <td><span class="pos-badge pos-${posClass(p.position||p.pos)}">${p.position||p.pos}</span></td>
       <td style="color:var(--muted);font-size:0.8rem">${p.team||p.pl_team||'—'}</td>
       <td class="score-cell" style="color:var(--accent3)">${p.fantrax_score_per90?.toFixed(2)||'—'}</td>
-      <td style="font-family:'DM Mono',monospace">${p.fantraxPts||'—'}</td>
-      <td style="font-family:'DM Mono',monospace">${p.fpg||'—'}</td>
+      <td style="font-family:monospace">${p.fantraxPts||'—'}</td>
+      <td style="font-family:monospace">${p.fpg||'—'}</td>
       <td>${p.goals??'—'}</td>
       <td>${p.assists??'—'}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)||'—'}</td>
+      <td style="font-family:monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)||'—'}</td>
       <td>${fdrBar(p.fdr_avg5)}</td>
       <td class="status-${p.status_fit||'a'}">${statusLabel(p.status_fit||'a')}</td>
     </tr>`).join('')}</tbody>
@@ -629,7 +629,7 @@ function showTeamRoster(code,btn){
 
   const isMe=code===MY_CODE;
   document.getElementById('teamRosterContainer').innerHTML=`
-    <div style="margin-bottom:1rem;font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--muted)">
+    <div style="margin-bottom:1rem;font-family:monospace;font-size:0.8rem;color:var(--muted)">
       ${OWNER_NAMES[code]||code}'s squad — ${players.length} players
     </div>
     <div class="table-wrap"><table>
@@ -639,11 +639,11 @@ function showTeamRoster(code,btn){
         <td><span class="pos-badge pos-${posClass(p.position||p.pos)}">${p.position||p.pos}</span></td>
         <td style="color:var(--muted);font-size:0.8rem">${p.team||'—'}</td>
         <td class="score-cell" style="color:${isMe?'var(--accent3)':'var(--text)'}">${p.fantrax_score_per90?.toFixed(2)||'—'}</td>
-        <td style="font-family:'DM Mono',monospace">${p.fantraxPts||'—'}</td>
-        <td style="font-family:'DM Mono',monospace">${p.fpg||'—'}</td>
+        <td style="font-family:monospace">${p.fantraxPts||'—'}</td>
+        <td style="font-family:monospace">${p.fpg||'—'}</td>
         <td>${p.goals??'—'}</td>
         <td>${p.assists??'—'}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)||'—'}</td>
+        <td style="font-family:monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)||'—'}</td>
         <td>${fdrBar(p.fdr_avg5)}</td>
       </tr>`).join('')}
     </tbody></table></div>`;
@@ -673,7 +673,7 @@ async function loadTop10(){
           <td style="color:var(--muted);font-size:0.8rem">${p.team}</td>
           <td class="score-cell" style="color:var(--accent)">${p.fantrax_score_per90?.toFixed(2)}</td>
           <td>${p.goals}</td><td>${p.assists}</td>
-          <td style="font-family:'DM Mono',monospace;font-size:0.8rem">${p.xg_per90?.toFixed(2)}</td>
+          <td style="font-family:monospace;font-size:0.8rem">${p.xg_per90?.toFixed(2)}</td>
           <td>${owner?`<span class="owner-badge">${owner}${owner===MY_CODE?' 👤':''}</span>`:''}</td>
           <td class="status-${p.status}">${statusLabel(p.status)}</td>
         </tr>`;
@@ -717,9 +717,9 @@ function renderDraftTable(){
         <td style="color:var(--muted);font-size:0.8rem">${p.team}</td>
         <td class="score-cell" style="color:${isMe?'var(--accent3)':p.is_your_pick?'var(--accent)':'var(--text)'}">${p.fantrax_score_per90?.toFixed(2)}</td>
         <td>${p.goals}</td><td>${p.assists}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.xa_per90?.toFixed(2)}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:0.78rem">${p.minutes}</td>
+        <td style="font-family:monospace;font-size:0.78rem">${p.xg_per90?.toFixed(2)}</td>
+        <td style="font-family:monospace;font-size:0.78rem">${p.xa_per90?.toFixed(2)}</td>
+        <td style="font-family:monospace;font-size:0.78rem">${p.minutes}</td>
         <td>${fdrBar(p.fdr_avg5)}</td>
         <td>${owner?`<span class="owner-badge">${owner}</span>`:''}</td>
         <td class="status-${p.status}">${statusLabel(p.status)}</td>
@@ -774,8 +774,8 @@ function renderWaiverCards(){
         <span class="pos-badge pos-${p.position}">${p.position}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><div class="card-score">${p.fantrax_score_per90?.toFixed(1)}<span>/90</span></div><div style="font-size:0.7rem;color:var(--muted);font-family:'DM Mono',monospace">FANTRAX PTS</div></div>
-        <div style="text-align:right">${fdrBar(p.fdr_avg5)}<div style="font-size:0.65rem;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px">FDR AVG</div></div>
+        <div><div class="card-score">${p.fantrax_score_per90?.toFixed(1)}<span>/90</span></div><div style="font-size:0.7rem;color:var(--muted);font-family:monospace">FANTRAX PTS</div></div>
+        <div style="text-align:right">${fdrBar(p.fdr_avg5)}<div style="font-size:0.65rem;color:var(--muted);font-family:monospace;margin-top:2px">FDR AVG</div></div>
       </div>
       <div class="card-stats">
         <div class="card-stat">G <span>${p.goals}</span></div><div class="card-stat">A <span>${p.assists}</span></div>
@@ -822,7 +822,7 @@ function renderFDR(data){
         <tr>
           <td class="fdr-team">${t.team}</td>
           ${(t.fixtures||[]).map(f=>`<td class="fdr-cell fdr-cell-${f.fdr}">${f.opponent} ${f.is_home?'H':'A'}</td>`).join('')}
-          <td style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--muted)">${t.avg_fdr?.toFixed(1)}</td>
+          <td style="font-family:monospace;font-size:0.8rem;color:var(--muted)">${t.avg_fdr?.toFixed(1)}</td>
         </tr>`).join('')}
       </tbody>
     </table></div>`;
@@ -843,7 +843,7 @@ async function testAlert(type){
   try{
     const r=await fetch(`${API}/api/alerts/test/${type}`,{method:'POST'});
     const d=await r.json();
-    el.innerHTML=`<div style="background:rgba(127,255,107,0.1);border:1px solid rgba(127,255,107,0.3);color:var(--accent3);border-radius:8px;padding:0.8rem 1.2rem;font-family:'DM Mono',monospace;font-size:0.8rem">✓ ${JSON.stringify(d)}</div>`;
+    el.innerHTML=`<div style="background:rgba(127,255,107,0.1);border:1px solid rgba(127,255,107,0.3);color:var(--accent3);border-radius:8px;padding:0.8rem 1.2rem;font-family:monospace;font-size:0.8rem">✓ ${JSON.stringify(d)}</div>`;
   }catch(e){el.innerHTML=`<div class="error-msg">Failed: ${e.message}</div>`;}
 }
 
@@ -964,8 +964,8 @@ function analyseTrade(){
       ${bars.map(([label,gv,rv,max,fmt])=>`
         <div style="margin-bottom:1rem">
           <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-            <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-transform:uppercase">${label}</span>
-            <span style="font-family:'DM Mono',monospace;font-size:0.75rem"><span style="color:var(--bad)">${fmt(gv)}</span> → <span style="color:var(--accent3)">${fmt(rv)}</span></span>
+            <span style="font-family:monospace;font-size:0.7rem;color:var(--muted);text-transform:uppercase">${label}</span>
+            <span style="font-family:monospace;font-size:0.75rem"><span style="color:var(--bad)">${fmt(gv)}</span> → <span style="color:var(--accent3)">${fmt(rv)}</span></span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
             <div style="background:var(--border);border-radius:3px;height:7px;display:flex;justify-content:flex-end;overflow:hidden">
@@ -977,8 +977,8 @@ function analyseTrade(){
           </div>
         </div>`).join('')}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:0.25rem">
-        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--bad);text-align:right">▲ GIVING: ${give.map(p=>p.name).join(' + ')}</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--accent3);padding-left:8px">▲ RECEIVING: ${recv.map(p=>p.name).join(' + ')}</div>
+        <div style="font-family:monospace;font-size:0.7rem;color:var(--bad);text-align:right">▲ GIVING: ${give.map(p=>p.name).join(' + ')}</div>
+        <div style="font-family:monospace;font-size:0.7rem;color:var(--accent3);padding-left:8px">▲ RECEIVING: ${recv.map(p=>p.name).join(' + ')}</div>
       </div>
     </div>
     <div class="section-title"><span class="accent">Player</span> Comparison</div>
@@ -991,13 +991,13 @@ function analyseTrade(){
         return `<div class="compare-card" style="border-color:${ig?'rgba(244,67,54,0.3)':'rgba(127,255,107,0.3)'}">
           <div class="compare-card-header">
             <div>
-              <div style="font-size:0.65rem;font-family:'DM Mono',monospace;color:${col};text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${lbl}</div>
+              <div style="font-size:0.65rem;font-family:monospace;color:${col};text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${lbl}</div>
               <div style="font-weight:600">${p.name}</div>
               <div style="font-size:0.75rem;color:var(--muted)">${p.team} · <span class="pos-badge pos-${p.position}">${p.position}</span>${owner?` · <span class="owner-badge">${OWNER_NAMES[owner]||owner}</span>`:''}</div>
             </div>
             <div style="text-align:right">
-              <div style="font-family:'Bebas Neue',cursive;font-size:2rem;color:${col};line-height:1">${p.fantrax_score_per90?.toFixed(2)}</div>
-              <div style="font-size:0.65rem;color:var(--muted);font-family:'DM Mono',monospace">pts/90</div>
+              <div style="font-family:cursive;font-size:2rem;color:${col};line-height:1">${p.fantrax_score_per90?.toFixed(2)}</div>
+              <div style="font-size:0.65rem;color:var(--muted);font-family:monospace">pts/90</div>
             </div>
           </div>
           <div class="compare-rows">
@@ -1107,11 +1107,11 @@ function renderTeamScoring(){
       return '<tr>'+
         '<td class="pick-num">'+(i+1)+'</td>'+
         '<td style="font-weight:500">'+team+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;color:var(--accent);font-weight:500">'+Math.round(data.total)+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--gk)">'+Math.round(data.byPos.GK||0)+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--def)">'+Math.round(data.byPos.DEF||0)+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--mid)">'+Math.round(data.byPos.MID||0)+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--fwd)">'+Math.round(data.byPos.FWD||0)+'</td>'+
+        '<td style="font-family:monospace;color:var(--accent);font-weight:500">'+Math.round(data.total)+'</td>'+
+        '<td style="font-family:monospace;font-size:0.78rem;color:var(--gk)">'+Math.round(data.byPos.GK||0)+'</td>'+
+        '<td style="font-family:monospace;font-size:0.78rem;color:var(--def)">'+Math.round(data.byPos.DEF||0)+'</td>'+
+        '<td style="font-family:monospace;font-size:0.78rem;color:var(--mid)">'+Math.round(data.byPos.MID||0)+'</td>'+
+        '<td style="font-family:monospace;font-size:0.78rem;color:var(--fwd)">'+Math.round(data.byPos.FWD||0)+'</td>'+
         '<td style="font-size:0.82rem">'+
           (top?top.name+(isOwned?'<span class="my-squad-badge">MINE</span>':owner?'<span class="owner-badge">'+owner+'</span>':''):'—')+
         '</td>'+
@@ -1175,7 +1175,7 @@ function renderSetPieces(fplPlayers, fplTeams){
       '<div class="sp-row"><span class="sp-type">🎯 Free Ks</span><div class="sp-players">'+renderPlayers(data.freekicks)+'</div></div>'+
     '</div>';
   }).join('')+'</div>'+
-  '<div style="margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted)">'+
+  '<div style="margin-top:1rem;font-family:monospace;font-size:0.7rem;color:var(--muted)">'+
     '<span style="display:inline-block;background:rgba(0,229,255,0.12);border:1px solid var(--accent);color:var(--accent);padding:1px 7px;border-radius:3px;margin-right:6px">blue</span> Primary taker &nbsp;'+
     '<span style="display:inline-block;background:rgba(127,255,107,0.1);border:1px solid var(--accent3);color:var(--accent3);padding:1px 7px;border-radius:3px;margin-right:6px">green</span> On your squad'+
   '</div>';
@@ -1257,20 +1257,20 @@ function renderXGA(fplPlayers, fplTeams){
         '<td class="player-name">'+p.name+(isOwned?'<span class="my-squad-badge">MINE</span>':'')+'</td>'+
         '<td><span class="pos-badge pos-'+p.pos+'">'+p.pos+'</span></td>'+
         '<td style="color:var(--muted);font-size:0.8rem">'+p.team+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem">'+p.mins+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;font-weight:500">'+p.ga+'</td>'+
-        '<td style="font-family:'DM Mono',monospace">'+p.xga.toFixed(1)+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;color:'+diffColor+';font-weight:500">'+diffSign+p.diff.toFixed(1)+'</td>'+
+        '<td style="font-family:monospace;font-size:0.78rem">'+p.mins+'</td>'+
+        '<td style="font-family:monospace;font-weight:500">'+p.ga+'</td>'+
+        '<td style="font-family:monospace">'+p.xga.toFixed(1)+'</td>'+
+        '<td style="font-family:monospace;color:'+diffColor+';font-weight:500">'+diffSign+p.diff.toFixed(1)+'</td>'+
         '<td><div class="perf-bar"><div class="perf-fill '+fillClass+'" style="width:'+barFill+'%"></div></div></td>'+
-        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem">'+p.gaPer90.toFixed(2)+'</td>'+
-        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem">'+p.xgaPer90.toFixed(2)+'</td>'+
+        '<td style="font-family:monospace;font-size:0.78rem">'+p.gaPer90.toFixed(2)+'</td>'+
+        '<td style="font-family:monospace;font-size:0.78rem">'+p.xgaPer90.toFixed(2)+'</td>'+
         '<td class="clean-prob '+csClass+'">'+p.csProb+'%</td>'+
         '<td>'+fdrBar(p.fdr)+'</td>'+
         '<td>'+(p.owner&&p.owner!=='FA'&&p.owner!=='WW'?'<span class="owner-badge">'+p.owner+'</span>':'')+'</td>'+
       '</tr>';
     }).join('')+
     '</tbody></table></div>'+
-    '<div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);margin-top:0.5rem">'+
+    '<div style="font-family:monospace;font-size:0.72rem;color:var(--muted);margin-top:0.5rem">'+
       '<span style="color:var(--bad)">■</span> Red bar = GA &gt; xGA (over-performing, regression likely) &nbsp;'+
       '<span style="color:var(--accent3)">■</span> Green bar = GA &lt; xGA (under-performing, improvement likely) &nbsp;'+
       'CS Prob = estimated clean sheet probability based on xGA/90 and upcoming FDR'+
