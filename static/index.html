@@ -178,6 +178,39 @@
   .reason-text{font-size:0.85rem;color:var(--text);line-height:1.5;}
   .reason-text strong{color:var(--accent);}
   @media(max-width:768px){.trade-layout{grid-template-columns:1fr;}.trade-vs{padding-top:0;}.compare-grid{grid-template-columns:1fr;}}
+
+  /* ANALYSIS TAB */
+  .analysis-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:0;}
+  .analysis-tab-btn{background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;padding:0.75rem 1.25rem;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;margin-bottom:-1px;}
+  .analysis-tab-btn:hover{color:var(--text);}
+  .analysis-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .analysis-panel{display:none;}
+  .analysis-panel.active{display:block;animation:fadeIn 0.3s ease;}
+  .team-score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:2rem;}
+  .team-score-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;}
+  .team-score-card .team-name{font-weight:600;font-size:0.95rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;}
+  .team-total{font-family:'Bebas Neue',cursive;font-size:1.8rem;color:var(--accent);}
+  .team-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin-top:0.6rem;}
+  .team-pos-stat{text-align:center;font-family:'DM Mono',monospace;font-size:0.68rem;}
+  .team-pos-stat .pos-val{font-size:1rem;font-weight:500;display:block;}
+  .sp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;}
+  .sp-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;}
+  .sp-card .club{font-weight:600;font-size:0.9rem;margin-bottom:0.75rem;color:var(--text);}
+  .sp-row{display:flex;gap:0.5rem;margin-bottom:0.4rem;align-items:flex-start;}
+  .sp-type{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;width:65px;flex-shrink:0;padding-top:2px;}
+  .sp-players{display:flex;flex-wrap:wrap;gap:0.3rem;}
+  .sp-chip{font-family:'DM Mono',monospace;font-size:0.72rem;padding:2px 8px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);}
+  .sp-chip.primary{background:rgba(0,229,255,0.12);border-color:var(--accent);color:var(--accent);}
+  .sp-chip.owned{background:rgba(127,255,107,0.1);border-color:var(--accent3);color:var(--accent3);}
+  .xga-table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:2rem;}
+  .perf-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;width:80px;}
+  .perf-fill{height:100%;border-radius:4px;}
+  .perf-over{background:var(--bad);}
+  .perf-under{background:var(--accent3);}
+  .clean-prob{font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:500;}
+  .clean-high{color:var(--accent3);}
+  .clean-mid{color:var(--warn);}
+  .clean-low{color:var(--bad);}
 </style>
 </head>
 <body>
@@ -194,6 +227,7 @@
   <button onclick="switchTab('draft',this)">Draft Board</button>
   <button onclick="switchTab('waiver',this)">Waiver Wire</button>
   <button onclick="switchTab('trade',this)">Trade Analyser</button>
+  <button onclick="switchTab('analysis',this)">Analysis</button>
   <button onclick="switchTab('fdr',this)">Fixtures / FDR</button>
   <button onclick="switchTab('alerts',this)">Alerts</button>
 </nav>
@@ -306,6 +340,40 @@
     <div id="tradeResult"></div>
   </div>
 
+
+  <!-- ANALYSIS -->
+  <div id="tab-analysis" class="tab">
+    <div class="analysis-tabs">
+      <button class="analysis-tab-btn active" onclick="switchAnalysis('teamscoring',this)">📊 Team Scoring</button>
+      <button class="analysis-tab-btn" onclick="switchAnalysis('setpieces',this)">🎯 Set Piece Takers</button>
+      <button class="analysis-tab-btn" onclick="switchAnalysis('gkdef',this)">🧤 GK/DEF xGA Analysis</button>
+    </div>
+
+    <!-- TEAM SCORING -->
+    <div id="panel-teamscoring" class="analysis-panel active">
+      <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1.5rem">Total Fantrax points scored by players from each PL club — shows which teams produce the most fantasy value. Load player data first.</p>
+      <div id="teamScoringContainer"><div class="empty">Click Load Data in settings above to populate</div></div>
+    </div>
+
+    <!-- SET PIECES -->
+    <div id="panel-setpieces" class="analysis-panel">
+      <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1.5rem">Set piece takers sourced live from the FPL API. Primary takers highlighted in blue. Players on your squad highlighted in green.</p>
+      <div id="setPiecesContainer"><div class="loading"><div class="spinner"></div>Loading set piece data...</div></div>
+    </div>
+
+    <!-- GK/DEF xGA -->
+    <div id="panel-gkdef" class="analysis-panel">
+      <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1.5rem">Goals Against vs xGA for all GKs and DEFs. Over-performing (GA &lt; xGA) suggests lucky — regression likely. Under-performing (GA &gt; xGA) suggests unlucky — improvement likely.</p>
+      <div class="filters" style="margin-bottom:1rem">
+        <button class="filter-btn active" onclick="setXGAFilter('ALL',this)">All</button>
+        <button class="filter-btn gk" onclick="setXGAFilter('GK',this)">GK Only</button>
+        <button class="filter-btn def" onclick="setXGAFilter('DEF',this)">DEF Only</button>
+        <button class="filter-btn" onclick="setXGAFilter('OWNED',this)">My Squad</button>
+      </div>
+      <div id="xgaContainer"><div class="loading"><div class="spinner"></div>Loading xGA data...</div></div>
+    </div>
+  </div>
+
   <!-- FDR -->
   <div id="tab-fdr" class="tab">
     <div id="fdrContainer"><div class="loading"><div class="spinner"></div>Loading fixtures...</div></div>
@@ -345,7 +413,10 @@ let allDraftPlayers=[],allWaiverPlayers=[],allPlayers=[];
 let draftFilter='ALL',waiverFilter='ALL';
 let showMyPicksOnly=false,draftSearchTerm='',waiverSearchTerm='';
 let tradeSide={give:[],receive:[]};
-let fantraxData={}; // { playerName: { status, fantraxPts, fpg, rank } }
+let fantraxData={};
+let analysisLoaded=false;
+let fplRawPlayers=[];
+let xgaFilter='ALL'; // { playerName: { status, fantraxPts, fpg, rank } }
 let leagueRosters={}; // { teamCode: [players] }
 let mySquadNames=new Set();
 
@@ -356,6 +427,7 @@ function switchTab(name,btn){
   document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
   if(name==='fdr'&&!fdrLoaded)loadFDR();
+  if(name==='analysis'&&!analysisLoaded)loadAnalysis();
 }
 
 // ── API HEALTH ──
@@ -975,6 +1047,235 @@ function statusLabel(s){return {a:'✓ Fit',i:'✗ Injured',d:'? Doubt',u:'? Unk
 document.addEventListener('click',e=>{
   if(!e.target.closest('.trade-search-wrap'))document.querySelectorAll('.trade-dropdown').forEach(d=>d.classList.remove('open'));
 });
+
+
+// ── ANALYSIS ──
+function switchAnalysis(panel, btn){
+  document.querySelectorAll('.analysis-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.analysis-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+panel).classList.add('active');
+}
+
+async function loadAnalysis(){
+  analysisLoaded=true;
+  // Fetch raw FPL data for set pieces and xGA
+  try{
+    const r=await fetch('https://fantasy.premierleague.com/api/bootstrap-static/');
+    const d=await r.json();
+    fplRawPlayers=d.elements||[];
+    const teams=d.teams||[];
+    renderTeamScoring();
+    renderSetPieces(fplRawPlayers, teams);
+    renderXGA(fplRawPlayers, teams);
+  }catch(e){
+    document.getElementById('setPiecesContainer').innerHTML='<div class="error-msg">Could not load FPL data: '+e.message+'</div>';
+    // Still render team scoring from existing data
+    renderTeamScoring();
+  }
+}
+
+// ── TEAM SCORING ──
+function renderTeamScoring(){
+  const el=document.getElementById('teamScoringContainer');
+  const players=allPlayers.length?allPlayers:allDraftPlayers;
+  if(!players.length){el.innerHTML='<div class="empty">Load player data first using the Load Data button above</div>';return;}
+
+  // Group by PL team
+  const teamMap={};
+  for(const p of players){
+    const t=p.team||'Unknown';
+    if(!teamMap[t])teamMap[t]={total:0,byPos:{GK:0,DEF:0,MID:0,FWD:0},players:[],count:{GK:0,DEF:0,MID:0,FWD:0}};
+    const pts=(p.fantrax_score_per90||0)*(p.minutes||0)/90;
+    teamMap[t].total+=pts;
+    teamMap[t].byPos[p.position]=(teamMap[t].byPos[p.position]||0)+pts;
+    teamMap[t].count[p.position]=(teamMap[t].count[p.position]||0)+1;
+    teamMap[t].players.push(p);
+  }
+
+  const sorted=Object.entries(teamMap).sort((a,b)=>b[1].total-a[1].total);
+  const maxTotal=sorted[0]?.[1]?.total||1;
+
+  el.innerHTML='<div class="section-title"><span class="accent">Total Fantrax Points</span> by PL Club</div>'+
+    '<div class="table-wrap" style="margin-bottom:2rem"><table>'+
+    '<thead><tr><th>#</th><th>Club</th><th>Total Pts</th><th>GK</th><th>DEF</th><th>MID</th><th>FWD</th><th>Top Player</th><th>Contribution</th></tr></thead>'+
+    '<tbody>'+sorted.map(([team,data],i)=>{
+      const top=data.players.sort((a,b)=>(b.fantrax_score_per90||0)-(a.fantrax_score_per90||0))[0];
+      const owner=top?getOwner(top.name):'';
+      const barW=Math.round(data.total/maxTotal*100);
+      const isOwned=mySquadNames.has(top?.name||'');
+      return '<tr>'+
+        '<td class="pick-num">'+(i+1)+'</td>'+
+        '<td style="font-weight:500">'+team+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;color:var(--accent);font-weight:500">'+Math.round(data.total)+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--gk)">'+Math.round(data.byPos.GK||0)+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--def)">'+Math.round(data.byPos.DEF||0)+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--mid)">'+Math.round(data.byPos.MID||0)+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--fwd)">'+Math.round(data.byPos.FWD||0)+'</td>'+
+        '<td style="font-size:0.82rem">'+
+          (top?top.name+(isOwned?'<span class="my-squad-badge">MINE</span>':owner?'<span class="owner-badge">'+owner+'</span>':''):'—')+
+        '</td>'+
+        '<td><div class="perf-bar"><div class="perf-fill perf-under" style="width:'+barW+'%"></div></div></td>'+
+      '</tr>';
+    }).join('')+
+    '</tbody></table></div>';
+}
+
+// ── SET PIECES ──
+function renderSetPieces(fplPlayers, fplTeams){
+  const el=document.getElementById('setPiecesContainer');
+
+  // Build FPL team id → name map
+  const teamNames={};
+  for(const t of fplTeams)teamNames[t.id]=t.name;
+
+  // Group players by team, only those with set piece orders
+  const byTeam={};
+  for(const p of fplPlayers){
+    const tName=teamNames[p.team]||'Unknown';
+    if(!byTeam[tName])byTeam[tName]={penalties:[],corners:[],freekicks:[]};
+
+    if(p.penalties_order&&p.penalties_order<=5)
+      byTeam[tName].penalties.push({name:p.web_name,order:p.penalties_order,id:p.id});
+    if(p.corners_and_indirect_freekicks_order&&p.corners_and_indirect_freekicks_order<=5)
+      byTeam[tName].corners.push({name:p.web_name,order:p.corners_and_indirect_freekicks_order,id:p.id});
+    if(p.direct_freekicks_order&&p.direct_freekicks_order<=5)
+      byTeam[tName].freekicks.push({name:p.web_name,order:p.direct_freekicks_order,id:p.id});
+  }
+
+  // Sort each by order
+  for(const t of Object.values(byTeam)){
+    t.penalties.sort((a,b)=>a.order-b.order);
+    t.corners.sort((a,b)=>a.order-b.order);
+    t.freekicks.sort((a,b)=>a.order-b.order);
+  }
+
+  const clubs=Object.keys(byTeam).sort();
+
+  function chipClass(player, order){
+    const apiName=findApiPlayerByFplName(player.name);
+    const owned=apiName&&mySquadNames.has(apiName);
+    if(owned)return 'sp-chip owned';
+    if(order===1)return 'sp-chip primary';
+    return 'sp-chip';
+  }
+
+  function renderPlayers(arr){
+    if(!arr.length)return '<span style="color:var(--muted);font-size:0.75rem">—</span>';
+    return arr.map(p=>`<span class="${chipClass(p,p.order)}">${p.name}</span>`).join('');
+  }
+
+  el.innerHTML='<div class="sp-grid">'+clubs.map(club=>{
+    const data=byTeam[club];
+    if(!data.penalties.length&&!data.corners.length&&!data.freekicks.length)return '';
+    return '<div class="sp-card">'+
+      '<div class="club">'+club+'</div>'+
+      '<div class="sp-row"><span class="sp-type">⚽ Pens</span><div class="sp-players">'+renderPlayers(data.penalties)+'</div></div>'+
+      '<div class="sp-row"><span class="sp-type">📐 Corners</span><div class="sp-players">'+renderPlayers(data.corners)+'</div></div>'+
+      '<div class="sp-row"><span class="sp-type">🎯 Free Ks</span><div class="sp-players">'+renderPlayers(data.freekicks)+'</div></div>'+
+    '</div>';
+  }).join('')+'</div>'+
+  '<div style="margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted)">'+
+    '<span style="display:inline-block;background:rgba(0,229,255,0.12);border:1px solid var(--accent);color:var(--accent);padding:1px 7px;border-radius:3px;margin-right:6px">blue</span> Primary taker &nbsp;'+
+    '<span style="display:inline-block;background:rgba(127,255,107,0.1);border:1px solid var(--accent3);color:var(--accent3);padding:1px 7px;border-radius:3px;margin-right:6px">green</span> On your squad'+
+  '</div>';
+}
+
+function findApiPlayerByFplName(fplName){
+  const fn=fplName.toLowerCase().replace(/[^a-z]/g,'');
+  const found=allPlayers.find(p=>{
+    const sn=(p.name||'').toLowerCase().replace(/[^a-z]/g,'');
+    return sn===fn||sn.includes(fn)||fn.includes(sn)||sn.slice(0,6)===fn.slice(0,6);
+  });
+  return found?found.name:null;
+}
+
+// ── GK/DEF xGA ──
+function setXGAFilter(f,btn){
+  xgaFilter=f;
+  document.querySelectorAll('#panel-gkdef .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderXGA(fplRawPlayers,[]);
+}
+
+function renderXGA(fplPlayers, fplTeams){
+  const el=document.getElementById('xgaContainer');
+  if(!fplPlayers.length){el.innerHTML='<div class="empty">Loading FPL data...</div>';return;}
+
+  // Build team name map
+  const teamNames={};
+  for(const t of fplTeams)teamNames[t.id]=t.name;
+
+  // Filter GKs and DEFs
+  let players=fplPlayers.filter(p=>p.element_type===1||p.element_type===2);
+  players=players.filter(p=>(p.minutes||0)>=450); // min 5 games
+
+  // Map to useful data
+  let mapped=players.map(p=>{
+    const pos=p.element_type===1?'GK':'DEF';
+    const ga=p.goals_conceded||0;
+    const xga=parseFloat(p.expected_goals_conceded)||0;
+    const diff=ga-xga; // positive = over-performing (bad), negative = under (lucky)
+    const mins=p.minutes||1;
+    const gaPer90=(ga/(mins/90));
+    const xgaPer90=parseFloat(p.expected_goals_conceded_per_90)||0;
+    const fdr=p.fdr||3;
+    // Clean sheet prob: rough model based on xGA/90 and upcoming FDR
+    const csProb=Math.max(0,Math.min(100,Math.round((1-(xgaPer90/3))*100*(1-(fdr-1)*0.08))));
+    const teamName=teamNames[p.team]||p.team_code;
+    const apiMatch=findApiPlayerByFplName(p.web_name);
+    const owner=apiMatch?getOwner(apiMatch):null;
+    return {name:p.web_name,fullName:p.first_name+' '+p.second_name,pos,team:teamName,ga,xga,diff,gaPer90,xgaPer90,csProb,mins,owner,apiMatch,fdr};
+  });
+
+  // Apply filter
+  if(xgaFilter==='GK')mapped=mapped.filter(p=>p.pos==='GK');
+  else if(xgaFilter==='DEF')mapped=mapped.filter(p=>p.pos==='DEF');
+  else if(xgaFilter==='OWNED')mapped=mapped.filter(p=>p.apiMatch&&mySquadNames.has(p.apiMatch));
+
+  // Sort by biggest over-performance first (worst luck situation)
+  mapped.sort((a,b)=>b.diff-a.diff);
+
+  const maxDiff=Math.max(...mapped.map(p=>Math.abs(p.diff)),1);
+
+  el.innerHTML='<div class="section-title"><span class="accent">GK/DEF</span> Goals Against vs xGA</div>'+
+    '<div class="xga-table-wrap"><table>'+
+    '<thead><tr>'+
+    '<th>Player</th><th>Pos</th><th>Club</th><th>Mins</th>'+
+    '<th>GA</th><th>xGA</th><th>Diff</th><th>GA vs xGA</th>'+
+    '<th>GA/90</th><th>xGA/90</th>'+
+    '<th>CS Prob%</th><th>FDR</th><th>Owner</th>'+
+    '</tr></thead>'+
+    '<tbody>'+mapped.map(p=>{
+      const isOwned=p.apiMatch&&mySquadNames.has(p.apiMatch);
+      const diffColor=p.diff>1.5?'var(--bad)':p.diff<-1.5?'var(--accent3)':'var(--muted)';
+      const diffSign=p.diff>0?'+':'';
+      const barFill=Math.round(Math.abs(p.diff)/maxDiff*100);
+      const fillClass=p.diff>0?'perf-over':'perf-under';
+      const csClass=p.csProb>=50?'clean-high':p.csProb>=30?'clean-mid':'clean-low';
+      return '<tr class="'+(isOwned?'my-squad':'')+'">'+
+        '<td class="player-name">'+p.name+(isOwned?'<span class="my-squad-badge">MINE</span>':'')+'</td>'+
+        '<td><span class="pos-badge pos-'+p.pos+'">'+p.pos+'</span></td>'+
+        '<td style="color:var(--muted);font-size:0.8rem">'+p.team+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem">'+p.mins+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;font-weight:500">'+p.ga+'</td>'+
+        '<td style="font-family:'DM Mono',monospace">'+p.xga.toFixed(1)+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;color:'+diffColor+';font-weight:500">'+diffSign+p.diff.toFixed(1)+'</td>'+
+        '<td><div class="perf-bar"><div class="perf-fill '+fillClass+'" style="width:'+barFill+'%"></div></div></td>'+
+        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem">'+p.gaPer90.toFixed(2)+'</td>'+
+        '<td style="font-family:'DM Mono',monospace;font-size:0.78rem">'+p.xgaPer90.toFixed(2)+'</td>'+
+        '<td class="clean-prob '+csClass+'">'+p.csProb+'%</td>'+
+        '<td>'+fdrBar(p.fdr)+'</td>'+
+        '<td>'+(p.owner&&p.owner!=='FA'&&p.owner!=='WW'?'<span class="owner-badge">'+p.owner+'</span>':'')+'</td>'+
+      '</tr>';
+    }).join('')+
+    '</tbody></table></div>'+
+    '<div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);margin-top:0.5rem">'+
+      '<span style="color:var(--bad)">■</span> Red bar = GA &gt; xGA (over-performing, regression likely) &nbsp;'+
+      '<span style="color:var(--accent3)">■</span> Green bar = GA &lt; xGA (under-performing, improvement likely) &nbsp;'+
+      'CS Prob = estimated clean sheet probability based on xGA/90 and upcoming FDR'+
+    '</div>';
+}
 
 checkStatus();loadTop10();loadGW();loadFDR();loadAllPlayers();
 </script>
