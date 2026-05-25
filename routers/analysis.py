@@ -30,42 +30,17 @@ class TransferRequest(BaseModel):
 
 @router.post("/explain")
 async def explain_player(req: PlayerAnalysisRequest):
-    prompt = f"""You are an elite FPL analyst. Analyse this player and give a clear, punchy recommendation.
-
-Player: {req.player_name} ({req.team}, {req.position}) - £{req.price}m
-Season: {req.total_points} pts | xG: {req.xg} | xA: {req.xa} | Mins: {req.minutes}
-Form (last 5 GW avg): {req.form}
-Ownership: {req.ownership_pct}%
-Next 3 fixtures: {", ".join(req.next_fixtures)}
-GW transfers: +{req.transfers_in} in / -{req.transfers_out} out
-Captain consideration: {"Yes" if req.captain_pick else "No"}
-
-Respond in this exact structure:
-
-VERDICT: [BUY / HOLD / SELL / CAPTAIN] - one line summary
-
-FORM & OUTPUT:
-- 2-3 bullet points on recent performance and underlying numbers
-
-FIXTURES:
-- 1-2 bullet points on upcoming fixture difficulty
-
-OWNERSHIP ANGLE:
-- One sentence on whether his ownership makes him a differential or template pick
-
-RISK:
-- One sentence on the main downside
-
-Keep it sharp. No fluff. Analyst tone, not hype."""
     try:
         message = client.messages.create(
             model="claude-sonnet-4-5",
-            max_tokens=600,
-            messages=[{"role": "user", "content": prompt}]
+            max_tokens=100,
+            messages=[{"role": "user", "content": "Say hello"}]
         )
         return {"analysis": message.content[0].text}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import logging
+        logging.error(f"Anthropic error: {repr(e)}")
+        raise HTTPException(status_code=500, detail=repr(e))
 
 @router.post("/transfer")
 async def explain_transfer(req: TransferRequest):
