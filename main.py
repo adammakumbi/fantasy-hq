@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import players, fixtures, alerts, waiver, fpl_proxy
+from routers import players, fixtures, alerts, waiver, fpl_proxy, analysis
 from services.fixture_manager import fetch_and_store_fixtures, load_fixtures
 from services.scheduler import start_scheduler, stop_scheduler
 
@@ -73,6 +73,7 @@ app.include_router(fixtures.router, prefix="/api/fixtures", tags=["Fixtures"])
 app.include_router(alerts.router,   prefix="/api/alerts",   tags=["Alerts"])
 app.include_router(waiver.router,   prefix="/api/waiver",   tags=["Waiver"])
 app.include_router(fpl_proxy.router)
+app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
 
 
 @app.get("/api/health")
