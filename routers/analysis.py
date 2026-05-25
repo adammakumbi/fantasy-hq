@@ -59,7 +59,7 @@ RISK:
 Keep it sharp. No fluff. Analyst tone, not hype."""
     try:
         message = client.messages.create(
-            model="claude-opus-4-5",
+            model="claude-sonnet-4-5",
             max_tokens=600,
             messages=[{"role": "user", "content": prompt}]
         )
@@ -82,7 +82,7 @@ Budget remaining after transfer: £{req.budget_remaining}m
 Give a TRANSFER RATING out of 10 and explain in 3-4 punchy bullet points why this is or is not worth burning a transfer on. Flag if it is a panic sell or genuinely smart move."""
     try:
         message = client.messages.create(
-            model="claude-opus-4-5",
+            model="claude-sonnet-4-5",
             max_tokens=400,
             messages=[{"role": "user", "content": prompt}]
         )
