@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: fantasy-hq
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: CURRENT_SEASON
+        value: "2025-26"
+      - key: TIMEZONE
+        value: Europe/London
+      - key: WAIVER_DAY
+        value: tuesday
+      - key: FREE_AGENCY_DAY
+        value: wednesday
+      - key: ALERT_WEBHOOK_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
