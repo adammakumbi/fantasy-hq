@@ -66,6 +66,11 @@ app.add_middleware(
 async def serve_dashboard():
     return FileResponse("static/index.html")
 
+@app.get("/sw.js")
+async def serve_service_worker():
+    # Served at the root (not /static/sw.js) so its default scope covers the whole app.
+    return FileResponse("static/sw.js", media_type="application/javascript")
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(players.router,  prefix="/api/players",  tags=["Players"])
