@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.onrender.fantasy_hq.twa",
+        "sha256_cert_fingerprints": ["B4:9A:F4:C7:5F:C1:CD:51:89:A1:08:1E:92:F7:AD:E8:B9:3D:E3:57:96:C7:A6:69:2E:4A:78:A2:E3:A7:11:D8"]
+      }
+    }]

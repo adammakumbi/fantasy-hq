@@ -71,6 +71,12 @@ async def serve_service_worker():
     # Served at the root (not /static/sw.js) so its default scope covers the whole app.
     return FileResponse("static/sw.js", media_type="application/javascript")
 
+@app.get("/.well-known/assetlinks.json")
+async def serve_asset_links():
+    # Verifies ownership of the domain for the Android TWA package, so the
+    # app opens without a Chrome address bar.
+    return FileResponse(".well-known/assetlinks.json", media_type="application/json")
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(players.router,  prefix="/api/players",  tags=["Players"])
