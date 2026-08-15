@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0a">
+<title>FitApp</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0a0a0a;color:#e5e5e5;font-family:'Barlow Condensed',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#111}::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+input{font-family:inherit;-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+
+/* TABS */
+.main-tabs{position:fixed;bottom:0;left:0;right:0;background:#0d0d0d;border-top:1px solid #1a1a1a;display:flex;z-index:300;padding-bottom:env(safe-area-inset-bottom,0)}
+.main-tab{flex:1;border:none;background:transparent;color:#555;padding:10px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;cursor:pointer;transition:color 0.15s}
+.main-tab.active{color:#4ade80}
+.main-tab svg{width:22px;height:22px}
+.tab-page{display:none;padding-bottom:70px;min-height:100vh}
+.tab-page.active{display:block}
+
+/* COMMON CARDS */
+.card{background:#111;border:1px solid #1e1e1e;border-radius:12px}
+.glow{box-shadow:0 0 20px rgba(74,222,128,0.08)}
+.btn{border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;border-radius:8px;transition:all 0.15s;font-weight:600;letter-spacing:0.05em;-webkit-appearance:none}
+.btn:active{filter:brightness(0.9)}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
+.input-field{background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;color:#e5e5e5;padding:8px 12px;font-size:16px;width:100%;transition:border-color 0.15s;font-family:'Barlow Condensed',sans-serif}
+.input-field:focus{outline:none;border-color:#4ade80}
+.pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.slide-in{animation:slideIn 0.2s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* STICKY HEADER */
+.page-header{background:#0d0d0d;border-bottom:1px solid #1a1a1a;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+
+/* ── CARDIO PAGE STYLES ── */
+:root{--bg:#0a0a0f;--surface:#12121a;--ccard:#1a1a26;--border:#2a2a3d;--accent:#e8ff47;--accent2:#ff4d6d;--accent3:#47c8ff;--muted:#6b6b8a;--radius:16px}
+#page-cardio{background:var(--bg);color:#f0f0f8;font-family:'Barlow Condensed',sans-serif}
+#page-cardio .hero{padding:28px 20px 24px;background:linear-gradient(135deg,#12121a 0%,#1a1020 100%);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+#page-cardio .hero::before{content:'CARDIO';font-family:'Bebas Neue',sans-serif;font-size:7rem;color:rgba(232,255,71,0.04);position:absolute;right:-10px;top:-10px;line-height:1;pointer-events:none}
+#page-cardio .hero-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);margin-bottom:6px}
+#page-cardio .hero-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.06em;line-height:1.1}
+#page-cardio .hero-sub{font-size:0.85rem;color:var(--muted);margin-top:6px}
+#page-cardio .section-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.12em;color:var(--muted);padding:20px 20px 10px;text-transform:uppercase}
+.workout-card{margin:0 16px 12px;background:var(--ccard);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:transform 0.15s;position:relative;overflow:hidden}
+.workout-card:active{transform:scale(0.98)}
+.workout-card::after{content:'';position:absolute;top:0;left:0;width:3px;height:100%}
+.workout-card.tabata::after{background:var(--accent)}
+.workout-card.gym::after{background:var(--accent2)}
+.workout-card.bleep::after{background:var(--accent3)}
+.workout-card.row::after{background:#a47fff}
+.workout-card.outdoor::after{background:#47ffb8}
+.card-tag{display:inline-flex;align-items:center;gap:5px;font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:10px}
+.tag-tabata{background:rgba(232,255,71,0.12);color:var(--accent)}
+.tag-gym{background:rgba(255,77,109,0.12);color:var(--accent2)}
+.tag-bleep{background:rgba(71,200,255,0.12);color:var(--accent3)}
+.tag-row{background:rgba(164,127,255,0.12);color:#a47fff}
+.tag-outdoor{background:rgba(71,255,184,0.12);color:#47ffb8}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.06em}
+.card-meta{font-size:0.78rem;color:var(--muted);margin-top:4px}
+.card-arrow{position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.2rem}
+.detail-page{display:none}
+.detail-page.open{display:block;position:fixed;inset:0;z-index:400;background:var(--bg);overflow-y:auto;overscroll-behavior:contain}
+.detail-header{padding:16px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,15,0.97);backdrop-filter:blur(12px);z-index:10}
+.back-btn{width:36px;height:36px;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--ccard);cursor:pointer;flex-shrink:0}
+.detail-header-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.06em}
+.detail-body{padding:20px}
+.rules-box{background:rgba(232,255,71,0.06);border:1px solid rgba(232,255,71,0.18);border-radius:12px;padding:14px 16px;margin-bottom:20px}
+.rules-box-title{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);margin-bottom:8px;font-weight:600}
+.rules-box p{font-size:0.85rem;color:#f0f0f8;line-height:1.6}
+.exercise-list{display:flex;flex-direction:column;gap:8px}
+.exercise-item{background:var(--ccard);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.ex-num{width:30px;height:30px;border-radius:8px;background:rgba(232,255,71,0.1);color:var(--accent);font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ex-name{font-size:0.95rem;font-weight:500}
+.ex-note{font-size:0.75rem;color:var(--muted);margin-top:2px}
+.sub-heading{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--muted);margin:20px 0 10px;text-transform:uppercase}
+.bleep-table{width:100%;border-collapse:collapse}
+.bleep-table th{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.bleep-table td{padding:10px 12px;font-family:'DM Mono',monospace;font-size:0.9rem;border-bottom:1px solid rgba(42,42,61,0.5)}
+.bleep-table tr:last-child td{border-bottom:none}
+.speed-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--accent3),var(--accent));display:block;margin-top:4px}
+.gym-round{background:var(--ccard);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.gym-round-header{padding:12px 16px;background:rgba(255,77,109,0.07);border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;color:var(--accent2);display:flex;justify-content:space-between}
+.gym-exercise{padding:10px 16px;font-size:0.88rem;border-bottom:1px solid rgba(42,42,61,0.4);display:flex;align-items:center;gap:10px}
+.gym-exercise:last-child{border-bottom:none}
+.gym-dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);flex-shrink:0}
+.table-wrap{background:var(--ccard);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.row-steps{display:flex;flex-direction:column;gap:8px}
+.row-step{display:flex;gap:12px;background:var(--ccard);border:1px solid var(--border);border-radius:12px;padding:14px}
+.row-step-num{width:28px;height:28px;flex-shrink:0;background:rgba(164,127,255,0.12);color:#a47fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.8rem}
+.row-step-text{font-size:0.88rem;line-height:1.5;padding-top:4px}
+.outdoor-card{background:var(--ccard);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px}
+.outdoor-num{font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:0.1em;color:#47ffb8;margin-bottom:8px}
+.outdoor-text{font-size:0.88rem;line-height:1.6}
+
+/* TIMER STYLES */
+.timer-controls{padding:16px;display:flex;flex-direction:column;gap:12px}
+.timer-select-card{background:var(--ccard);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.timer-select-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:10px;font-weight:600}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mode-btn{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center}
+.mode-btn.selected{border-color:var(--accent);background:rgba(232,255,71,0.08);color:var(--accent)}
+.param-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.param-label{font-size:0.8rem;color:#f0f0f8;flex:1}
+.param-stepper{display:flex;align-items:center}
+.step-btn{width:36px;height:36px;border:1px solid var(--border);background:var(--surface);color:#f0f0f8;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s}
+.step-btn:first-child{border-radius:8px 0 0 8px}
+.step-btn:last-child{border-radius:0 8px 8px 0}
+.step-btn:active{background:var(--border)}
+.step-val{width:50px;height:36px;background:var(--ccard);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.9rem;font-weight:500}
+.timer-display-wrap{margin:8px 16px;background:var(--ccard);border:1px solid var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;position:relative;overflow:hidden}
+.timer-phase{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.2em;font-weight:600;margin-bottom:8px;transition:color 0.3s}
+.timer-phase.work{color:var(--accent)}
+.timer-phase.rest{color:var(--accent3)}
+.timer-phase.steady{color:#47ffb8}
+.timer-clock{font-family:'Bebas Neue',sans-serif;font-size:6rem;letter-spacing:0.05em;line-height:1;transition:color 0.3s}
+.timer-clock.work{color:var(--accent)}
+.timer-clock.rest{color:var(--accent3)}
+.timer-clock.done{color:var(--accent2)}
+.timer-info{margin-top:14px;display:flex;justify-content:center;gap:28px}
+.timer-stat{text-align:center}
+.timer-stat-val{font-family:'DM Mono',monospace;font-size:1.3rem;font-weight:500}
+.timer-stat-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:2px}
+.progress-ring-wrap{display:flex;justify-content:center;margin:4px 0}
+.progress-ring{transform:rotate(-90deg)}
+.ring-bg{stroke:var(--border);fill:none}
+.ring-fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset 0.5s linear,stroke 0.3s}
+.timer-action-row{display:flex;gap:10px;padding:0 16px 16px}
+.timer-action{flex:1;height:52px;border-radius:14px;border:none;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.1em;cursor:pointer;transition:transform 0.1s,opacity 0.1s}
+.timer-action:active{transform:scale(0.97);opacity:0.85}
+.btn-start-c{background:var(--accent);color:var(--bg)}
+.btn-pause-c{background:var(--surface);color:#f0f0f8;border:1px solid var(--border)}
+.btn-reset-c{background:var(--surface);color:var(--accent2);border:1px solid var(--border);flex:0 0 52px}
+
+/* REST TIMER OVERLAY */
+.rest-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;display:none}
+.rest-overlay.active{display:flex}
+.rest-big{font-family:'Bebas Neue',sans-serif;font-size:8rem;color:#4ade80;line-height:1;letter-spacing:4px}
+.rest-label{font-size:14px;letter-spacing:4px;color:#555;text-transform:uppercase;margin-bottom:20px}
+.rest-skip{border:1px solid #333;background:transparent;color:#888;padding:12px 32px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;margin-top:20px}
+
+/* INFO CARDS */
+.info-card{background:#111;border:1px solid #1e1e1e;border-radius:12px;padding:18px;margin-bottom:10px}
+.info-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.08em;margin-bottom:10px;color:#4ade80}
+.info-card p,.info-card li{font-size:0.85rem;color:#888;line-height:1.7}
+.info-card ul{padding-left:16px}
+.info-card li{margin-bottom:4px}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:0.7rem;padding:4px 10px;border-radius:20px;border:1px solid #2a2a2a;color:#666;font-weight:500}
+
+@keyframes flash{0%,100%{opacity:1}50%{opacity:0.3}}
+.flashing{animation:flash 0.5s ease-in-out 3}
+</style>
+</head>
+<body>
+
+<!-- REST TIMER OVERLAY -->
+<div class="rest-overlay" id="restOverlay">
+  <div class="rest-label">REST</div>
+  <div class="rest-big" id="restClock">90</div>
+  <div style="font-size:12px;color:#333;letter-spacing:3px;margin-top:8px">SECONDS</div>
+  <button class="rest-skip" onclick="skipRest()">SKIP REST</button>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PAGE: PPL WORKOUT -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="tab-page active" id="page-ppl">
+  <div class="page-header">
+    <div>
+      <div style="font-family:'Bebas Neue';font-size:26px;letter-spacing:3px;color:#4ade80;line-height:1">NIPPARD PPL</div>
+      <div style="font-size:10px;color:#555;letter-spacing:2px;margin-top:2px">ULTIMATE 6×/WEEK</div>
+    </div>
+    <div id="pplHeaderInfo" style="text-align:right"></div>
+  </div>
+  <div id="pplContent" class="slide-in"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PAGE: CARDIO -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="tab-page" id="page-cardio">
+  <div style="padding-top:0">
+    <div class="hero">
+      <div class="hero-label">Programme</div>
+      <div class="hero-title">Cardio<br>Workouts</div>
+      <div class="hero-sub">5 training modules · Tap to begin</div>
+    </div>
+    <div class="section-title">Interval Training</div>
+    <div class="workout-card tabata" onclick="openDetail('tabata')">
+      <div class="card-tag tag-tabata">⚡ Tabata</div>
+      <div class="card-title">Tabata Exercises</div>
+      <div class="card-meta">8 rounds · 20s on / 10s off · 2 workouts</div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="section-title">Gym</div>
+    <div class="workout-card gym" onclick="openDetail('gym')">
+      <div class="card-tag tag-gym">🏋 Gym Based</div>
+      <div class="card-title">Gym Workouts</div>
+      <div class="card-meta">4 circuits · Treadmill + Burpees + Row</div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="workout-card bleep" onclick="openDetail('bleep')">
+      <div class="card-tag tag-bleep">📈 Progressive</div>
+      <div class="card-title">Treadmill Bleep Test</div>
+      <div class="card-meta">17 levels · 8–16 km/hr · +0.5 per minute</div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="section-title">Low Impact &amp; Outdoor</div>
+    <div class="workout-card row" onclick="openDetail('rowing')">
+      <div class="card-tag tag-row">🚣 Low Impact</div>
+      <div class="card-title">Rowing Session</div>
+      <div class="card-meta">7 × 1 min on/off · 10 rounds of 10 mins</div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="workout-card outdoor" onclick="openDetail('outdoor')">
+      <div class="card-tag tag-outdoor">🏃 Outdoor</div>
+      <div class="card-title">Outdoor Cardio</div>
+      <div class="card-meta">Loops · Steady state · Hill sprints</div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+
+  <!-- Cardio sub-pages -->
+  <div class="tab-page" id="page-cardio-timer" style="background:var(--bg)">
+    <div style="font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:0.12em;color:var(--muted);padding:20px 20px 10px;text-transform:uppercase">Timer</div>
+    <div class="timer-controls">
+      <div class="timer-select-card">
+        <div class="timer-select-label">Mode</div>
+        <div class="mode-grid">
+          <button class="mode-btn selected" onclick="selectMode('tabata',this)">Tabata<br><small style="font-weight:400;font-size:0.7rem">20s / 10s</small></button>
+          <button class="mode-btn" onclick="selectMode('amrap',this)">AMRAP<br><small style="font-weight:400;font-size:0.7rem">Custom rounds</small></button>
+          <button class="mode-btn" onclick="selectMode('intervals',this)">Intervals<br><small style="font-weight:400;font-size:0.7rem">On / Off custom</small></button>
+          <button class="mode-btn" onclick="selectMode('bleep',this)">Bleep Test<br><small style="font-weight:400;font-size:0.7rem">60s levels</small></button>
+        </div>
+      </div>
+      <div class="timer-select-card" id="param-panel">
+        <div class="timer-select-label">Settings</div>
+        <div style="display:flex;flex-direction:column;gap:12px" id="params"></div>
+      </div>
+    </div>
+    <div class="timer-display-wrap">
+      <div class="timer-phase work" id="t-phase">READY</div>
+      <div class="progress-ring-wrap">
+        <svg class="progress-ring" width="140" height="140" viewBox="0 0 140 140">
+          <circle class="ring-bg" cx="70" cy="70" r="58" stroke-width="8"/>
+          <circle class="ring-fill" id="ring" cx="70" cy="70" r="58" stroke-width="8" stroke="var(--accent)" stroke-dasharray="364.4" stroke-dashoffset="364.4"/>
+        </svg>
+      </div>
+      <div class="timer-clock work" id="t-clock">00:00</div>
+      <div class="timer-info">
+        <div class="timer-stat"><div class="timer-stat-val" id="t-round">—</div><div class="timer-stat-label">Round</div></div>
+        <div class="timer-stat"><div class="timer-stat-val" id="t-total">—</div><div class="timer-stat-label">Total Rounds</div></div>
+      </div>
+    </div>
+    <div class="timer-action-row">
+      <button class="timer-action btn-start-c" id="btn-cstart" onclick="startCTimer()">START</button>
+      <button class="timer-action btn-pause-c" id="btn-cpause" onclick="pauseCTimer()" style="display:none">PAUSE</button>
+      <button class="timer-action btn-reset-c" onclick="resetCTimer()">↺</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PAGE: HISTORY -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="tab-page" id="page-history">
+  <div class="page-header">
+    <div style="font-family:'Bebas Neue';font-size:24px;letter-spacing:3px;color:#4ade80">HISTORY</div>
+  </div>
+  <div id="historyContent" style="padding:16px"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PAGE: CARDIO TIMER (tab) -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="tab-page" id="page-timer">
+  <div style="font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:0.12em;color:#888;padding:72px 20px 10px;text-transform:uppercase">Cardio Timer</div>
+  <div class="timer-controls">
+    <div class="timer-select-card">
+      <div class="timer-select-label">Mode</div>
+      <div class="mode-grid">
+        <button class="mode-btn selected" onclick="selectMode('tabata',this)">Tabata<br><small style="font-weight:400;font-size:0.7rem">20s / 10s</small></button>
+        <button class="mode-btn" onclick="selectMode('amrap',this)">AMRAP<br><small style="font-weight:400;font-size:0.7rem">Custom rounds</small></button>
+        <button class="mode-btn" onclick="selectMode('intervals',this)">Intervals<br><small style="font-weight:400;font-size:0.7rem">On / Off custom</small></button>
+        <button class="mode-btn" onclick="selectMode('bleep',this)">Bleep Test<br><small style="font-weight:400;font-size:0.7rem">60s levels</small></button>
+      </div>
+    </div>
+    <div class="timer-select-card" id="param-panel2">
+      <div class="timer-select-label">Settings</div>
+      <div style="display:flex;flex-direction:column;gap:12px" id="params2"></div>
+    </div>
+  </div>
+  <div class="timer-display-wrap">
+    <div class="timer-phase work" id="t-phase2">READY</div>
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" width="140" height="140" viewBox="0 0 140 140">
+        <circle class="ring-bg" cx="70" cy="70" r="58" stroke-width="8"/>
+        <circle class="ring-fill" id="ring2" cx="70" cy="70" r="58" stroke-width="8" stroke="var(--accent)" stroke-dasharray="364.4" stroke-dashoffset="364.4"/>
+      </svg>
+    </div>
+    <div class="timer-clock work" id="t-clock2">00:00</div>
+    <div class="timer-info">
+      <div class="timer-stat"><div class="timer-stat-val" id="t-round2">—</div><div class="timer-stat-label">Round</div></div>
+      <div class="timer-stat"><div class="timer-stat-val" id="t-total2">—</div><div class="timer-stat-label">Total Rounds</div></div>
+    </div>
+  </div>
+  <div class="timer-action-row">
+    <button class="timer-action btn-start-c" id="btn-cstart2" onclick="startCTimer2()">START</button>
+    <button class="timer-action btn-pause-c" id="btn-cpause2" onclick="pauseCTimer2()" style="display:none">PAUSE</button>
+    <button class="timer-action btn-reset-c" onclick="resetCTimer2()">↺</button>
+  </div>
+</div>
+
+<!-- CARDIO DETAIL OVERLAY -->
+<div class="detail-page" id="detail-overlay">
+  <div class="detail-header">
+    <div class="back-btn" onclick="closeDetail()">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </div>
+    <div class="detail-header-title" id="detail-title">Workout</div>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="main-tabs">
+  <button class="main-tab active" onclick="showTab('ppl',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    WORKOUT
+  </button>
+  <button class="main-tab" onclick="showTab('cardio',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    CARDIO
+  </button>
+  <button class="main-tab" onclick="showTab('timer',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+    TIMER
+  </button>
+  <button class="main-tab" onclick="showTab('history',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+    HISTORY
+  </button>
+</nav>
+
+<script>
+// ══════════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════════
+function load(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+// ══════════════════════════════════════════════════
+// TAB NAVIGATION
+// ══════════════════════════════════════════════════
+function showTab(id, btn){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='ppl') renderPPL();
+  if(id==='history') renderHistory();
+  if(id==='timer') renderParams2();
+}
+
+// ══════════════════════════════════════════════════
+// PPL DATA
+// ══════════════════════════════════════════════════
+const PHASES={
+  "Phase 1":{name:"Base Hypertrophy",weeks:6,color:"#4ade80",tag:"Moderate Vol / Moderate Intensity"},
+  "Phase 2":{name:"Maximum Effort",weeks:4,color:"#f59e0b",tag:"Low Vol / High Intensity"},
+  "Phase 3":{name:"Supercompensation",weeks:3,color:"#ef4444",tag:"High Vol / Moderate Intensity"}
+};
+const WORKOUTS=["Push #1","Pull #1","Legs #1","Push #2","Pull #2","Legs #2"];
+const WCOLORS={"Push #1":"#f97316","Pull #1":"#3b82f6","Legs #1":"#a855f7","Push #2":"#f97316","Pull #2":"#3b82f6","Legs #2":"#a855f7"};
+
+const PROGRAM={
+  "Phase 1":{
+    "Push #1":[
+      {name:"Bench Press",sets:1,reps:"3-5",notes:"Quick pause on chest, explode up"},
+      {name:"Larsen Press",sets:2,reps:"10",notes:"Zero leg drive, scapula retracted"},
+      {name:"Arnold Press",sets:3,reps:"8-10",notes:"Rotate palms as you press"},
+      {name:"Press-Around (superset w/ Pec Stretch)",sets:2,reps:"12-15",notes:"Superset with 30s pec stretch"},
+      {name:"Cross-Body Cable Y-Raise",sets:3,reps:"12-15",notes:"Draw a sword motion"},
+      {name:"Triceps Pressdown + Overhead Extension",sets:3,reps:"8+8",notes:"Squeeze then stretch ROM only"},
+      {name:"N1 Cross-Body Tricep Extension",sets:2,reps:"10-12",notes:"Arm out to side, feel the stretch"}
+    ],
+    "Pull #1":[
+      {name:"Lat Pulldown (4 Feeder Sets)",sets:4,reps:"10",notes:"Build weight each set, last set is failure"},
+      {name:"Lat Pulldown Failure + Dropset",sets:1,reps:"10+5",notes:"Drop 30-50% for 5 more reps"},
+      {name:"Omni-Grip Machine Row",sets:3,reps:"10-12",notes:"Use 3 different grips across sets"},
+      {name:"Bottom-Half DB Lat Pullover (superset)",sets:2,reps:"10-12",notes:"Stay in stretched ROM + 30s lat stretch"},
+      {name:"Omni-Direction Face Pull",sets:3,reps:"12-15",notes:"Low/mid/high angle each set"},
+      {name:"EZ-Bar Curl",sets:3,reps:"6-8",notes:"Minimize torso momentum"},
+      {name:"Bottom-Half Preacher Curl",sets:2,reps:"10-12",notes:"Stretched ROM only"}
+    ],
+    "Legs #1":[
+      {name:"Squat",sets:1,reps:"2-4",notes:"Sit back and down, upper back tight"},
+      {name:"Pause Squat (backoff -25%)",sets:2,reps:"5",notes:"2 second pause at bottom"},
+      {name:"Barbell RDL",sets:3,reps:"8-10",notes:"Neutral lower back, hips back"},
+      {name:"Walking Lunge",sets:2,reps:"10",notes:"Medium strides, minimal push-off"},
+      {name:"Seated Leg Curl",sets:3,reps:"10-12",notes:"Squeeze hamstrings throughout"},
+      {name:"Leg Press Toe Press (Calves)",sets:4,reps:"10-12",notes:"Full ROM, no bounce"},
+      {name:"Decline Plate Crunch",sets:3,reps:"10-12",notes:"Hold plate on chest, crunch hard"}
+    ],
+    "Push #2":[
+      {name:"Close-Grip Incline Press",sets:3,reps:"8/5/12",notes:"45° incline, shoulder-width grip"},
+      {name:"Machine Shoulder Press",sets:3,reps:"10-12",notes:"Smooth continuous tension"},
+      {name:"Floor Skull Crusher",sets:3,reps:"6-8",notes:"Arc bar behind head, dead stop on floor"},
+      {name:"Bent-Over Cable Pec Flye",sets:3,reps:"10-12",notes:"Squeeze pecs, big stretch at bottom"},
+      {name:"Eccentric + Constant Tension Lateral Raise",sets:3,reps:"5+15",notes:"5s lowering phase first 5 reps"},
+      {name:"Plate Front Raise",sets:2,reps:"15-20",notes:"Steering wheel rotation as you lift"},
+      {name:"Diamond Push Up",sets:1,reps:"AMRAP",notes:"Diamond hand shape, smooth tempo"}
+    ],
+    "Pull #2":[
+      {name:"1-Arm Kneeling Lat Pulldown",sets:3,reps:"12-15",notes:"Elbow tucked, squeeze lat to move weight"},
+      {name:"Pull-Up (AMRAP)",sets:1,reps:"AMRAP",notes:"1.5x shoulder width, chest to bar"},
+      {name:"Kroc Row",sets:3,reps:"10-12",notes:"Mild cheat ok, use straps if needed"},
+      {name:"Cable Shrug-In",sets:3,reps:"10-12",notes:"Two low cables, shrug up and in"},
+      {name:"Reverse Pec Deck",sets:3,reps:"10-12",notes:"Swing out, not back"},
+      {name:"N1 Cross-Body Cable Curl",sets:3,reps:"10-12",notes:"Arm at 60° out to side"}
+    ],
+    "Legs #2":[
+      {name:"Deadlift",sets:1,reps:"3-5",notes:"Brace lats, pull slack out before lifting"},
+      {name:"Stiff-Leg Deadlift",sets:2,reps:"8",notes:"High-hip, slight knee bend"},
+      {name:"Leg Press",sets:4,reps:"10-12",notes:"Medium width, no lower back rounding"},
+      {name:"Glute Ham Raise",sets:3,reps:"8-10",notes:"Hips straight throughout"},
+      {name:"Slow-Eccentric Leg Extension",sets:3,reps:"8-10",notes:"3-4 second negative"},
+      {name:"Seated Calf Raise",sets:4,reps:"15-20",notes:"Full ROM, no bounce"},
+      {name:"Roman Chair Leg Raise",sets:3,reps:"10-20",notes:"No swing, tuck knees if needed"}
+    ]
+  },
+  "Phase 2":{
+    "Push #1":[
+      {name:"Bench Press",sets:1,reps:"3-5",notes:"Explosive, pause on chest"},
+      {name:"High-Incline Smith Press",sets:2,reps:"4-6",notes:"45-60° incline, controlled negative"},
+      {name:"Egyptian Cable Lateral Raise",sets:2,reps:"6-8",notes:"Lean away from cable, squeeze delts"},
+      {name:"Overhead Cable Tricep Extension",sets:2,reps:"4-6",notes:"Both arms, resist the negative"},
+      {name:"Cable Triceps Kickback",sets:2,reps:"6-8",notes:"Elbow locked behind torso"}
+    ],
+    "Pull #1":[
+      {name:"Neutral-Grip Lat Pulldown",sets:3,reps:"4-6",notes:"Pull elbows down against sides"},
+      {name:"Pendlay Row",sets:2,reps:"4-6",notes:"Squeeze scaps, pull to lower chest"},
+      {name:"Reverse Pec Deck",sets:2,reps:"6-8",notes:"Swing out, not back"},
+      {name:"EZ-Bar Curl",sets:2,reps:"4-6",notes:"Arc out, squeeze biceps"},
+      {name:"Hammer Cheat Curl",sets:1,reps:"4-6",notes:"Slight momentum ok, control eccentric"}
+    ],
+    "Legs #1":[
+      {name:"Squat",sets:1,reps:"3-5",notes:"Sit back and down, upper back tight"},
+      {name:"Barbell RDL",sets:2,reps:"4-6",notes:"Neutral back, hips back"},
+      {name:"Leg Extension",sets:2,reps:"6-8",notes:"Squeeze quads to move the weight"},
+      {name:"Seated Calf Raise",sets:2,reps:"4-6",notes:"Full ROM, no bounce"},
+      {name:"Cable Crunch",sets:2,reps:"6-8",notes:"Round your back as you crunch"}
+    ],
+    "Push #2":[
+      {name:"Seated DB Shoulder Press",sets:2,reps:"6-8",notes:"Full ROM, torso upright"},
+      {name:"Weighted Dip",sets:2,reps:"4-6",notes:"45° elbow tuck, lean 15° forward"},
+      {name:"Machine Lateral Raise",sets:2,reps:"6-8",notes:"Squeeze lateral delt"},
+      {name:"Triceps Pressdown",sets:2,reps:"4-6",notes:"Squeeze triceps to move the weight"}
+    ],
+    "Pull #2":[
+      {name:"Wide-Grip Pull-Up",sets:2,reps:"4-6",notes:"Add weight or assistance to hit RPE"},
+      {name:"Close-Grip Seated Cable Row",sets:2,reps:"4-6",notes:"Scaps together, elbows down and back"},
+      {name:"Machine Shrug",sets:2,reps:"4-6",notes:"Shrug shoulders up to ears"},
+      {name:"Alternating DB Curl",sets:2,reps:"4-6",notes:"Alternate each rep"},
+      {name:"1-Arm DB Preacher Curl",sets:1,reps:"6-8",notes:"All reps one arm then switch"}
+    ],
+    "Legs #2":[
+      {name:"Hack Squat or Deadlift",sets:2,reps:"4-6",notes:"Knees forward for hack squat"},
+      {name:"DB Walking Lunge",sets:2,reps:"4-6 per leg",notes:"Use straps if grip is limiting"},
+      {name:"Seated Leg Curl",sets:2,reps:"4-6",notes:"Squeeze hamstrings"},
+      {name:"Standing Calf Raise",sets:2,reps:"6-8",notes:"Full ROM, no bounce"},
+      {name:"Decline Plate Crunch",sets:2,reps:"6-8",notes:"Plate on chest"}
+    ]
+  },
+  "Phase 3":{
+    "Push #1":[
+      {name:"Low Incline DB Press",sets:3,reps:"20",notes:"15° angle, elbows tuck on negative"},
+      {name:"Machine Shoulder Press",sets:3,reps:"15",notes:"Continuous tension, no pausing"},
+      {name:"Cable Crossover Ladder",sets:3,reps:"20",notes:"Low/mid/high cable position each set"},
+      {name:"Lean-In Lateral Raise + Side Delt Stretch",sets:3,reps:"15",notes:"Superset with 30s side delt stretch"},
+      {name:"Overhead Tricep Extension",sets:3,reps:"20",notes:"Both arms, resist the negative"},
+      {name:"Med-Ball Close Grip Push Up",sets:1,reps:"AMRAP",notes:"Smooth controlled tempo"}
+    ],
+    "Pull #1":[
+      {name:"1-Arm Kneeling Lat Pulldown",sets:2,reps:"20",notes:"Elbow tucked, lat squeeze"},
+      {name:"Omni-Grip Lat Pulldown",sets:3,reps:"20",notes:"Wide/mid/close grip each set"},
+      {name:"Machine Low Row",sets:4,reps:"20",notes:"Squeeze scaps each rep"},
+      {name:"Cable Shrug-In",sets:3,reps:"20",notes:"Shrug up and in"},
+      {name:"Reverse Pec Deck",sets:3,reps:"20",notes:"Swing out, not back"},
+      {name:"EZ-Bar Curl (Heavy)",sets:1,reps:"4-6",notes:"Arc out, squeeze biceps"},
+      {name:"EZ-Bar Bicep 21s + Stretch",sets:2,reps:"21",notes:"7 seated / 7 standing / 7 bottom-half"}
+    ],
+    "Legs #1":[
+      {name:"Front Squat",sets:3,reps:"15",notes:"Torso upright, be humble with weight"},
+      {name:"DB RDL",sets:3,reps:"20",notes:"Emphasize hamstring stretch"},
+      {name:"Walking Lunge",sets:3,reps:"10",notes:"Medium strides"},
+      {name:"Slow Seated Leg Curl (3s up/down)",sets:3,reps:"8",notes:"3 second positive AND negative"},
+      {name:"Leg Press Toe Press (Calves)",sets:3,reps:"20",notes:"Full calf ROM"},
+      {name:"LLPT Plank",sets:2,reps:"30s",notes:"Glutes squeezed, elbows under eyes"}
+    ],
+    "Push #2":[
+      {name:"Bench Press (Top Set)",sets:1,reps:"2-4",notes:"RPE 8-9, explosive"},
+      {name:"Bench Press (Back-off AMRAP)",sets:1,reps:"AMRAP",notes:"~60% of top set weight, spotter needed"},
+      {name:"Arnold Press",sets:3,reps:"15",notes:"Rotate palms as you press"},
+      {name:"Weighted Dip",sets:3,reps:"15-20",notes:"45° elbow tuck"},
+      {name:"Machine Lateral Raise + Myoreps",sets:3,reps:"12-15+",notes:"Last set: fail then 3x4 with 5s rest"},
+      {name:"Triceps Pressdown",sets:3,reps:"20",notes:"Squeeze triceps"},
+      {name:"1-Arm Overhead Cable Tricep Extension",sets:3,reps:"20-30",notes:"Stretched ROM only"}
+    ],
+    "Pull #2":[
+      {name:"Pull-Up (6 cluster sets x3)",sets:6,reps:"3",notes:"Rest 15s between each mini-set"},
+      {name:"Wide-Grip Cable Row (10 cluster sets x3)",sets:10,reps:"3",notes:"Rest 15s between each mini-set"},
+      {name:"Slow Barbell Row (3s up/down)",sets:3,reps:"6",notes:"Feel your back working"},
+      {name:"Bayesian Cable Curl",sets:3,reps:"20",notes:"Elbow behind torso, per arm"},
+      {name:"Bottom-Half Preacher Curl",sets:3,reps:"15",notes:"Stretched ROM only"},
+      {name:"Rope Facepull",sets:3,reps:"20",notes:"Elbows up and out"}
+    ],
+    "Legs #2":[
+      {name:"Deadlift",sets:2,reps:"8",notes:"Brace lats, pull slack out"},
+      {name:"Leg Press",sets:2,reps:"20",notes:"Medium width, no rounding"},
+      {name:"Leg Extension",sets:5,reps:"20",notes:"Squeeze quads"},
+      {name:"Lying Leg Curl",sets:3,reps:"20",notes:"Squeeze hamstrings"},
+      {name:"Seated Calf Raise",sets:3,reps:"20",notes:"Full ROM"},
+      {name:"Corpse Crunch",sets:2,reps:"20",notes:"Clear upper back, hold 1-2s at top"}
+    ]
+  }
+};
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let state = load('fit-state') || {phase:'Phase 1',week:1,workoutIdx:0};
+let logs = load('fit-logs') || {};
+let prs = load('fit-prs') || {};
+let bwLog = load('fit-bw') || [];
+let pplView = 'dashboard'; // dashboard | program | log
+let activeWorkout = null;
+let selectedPhase = state.phase;
+let selectedWorkout = WORKOUTS[state.workoutIdx];
+let restDuration = load('fit-restDur') || 90;
+let restTimer = null;
+let restRemaining = 0;
+let bwInput = '';
+
+function saveState(){save('fit-state',state);save('fit-logs',logs);save('fit-prs',prs);save('fit-bw',bwLog)}
+
+// ══════════════════════════════════════════════════
+// PPL RENDER
+// ══════════════════════════════════════════════════
+function renderPPL(){
+  const hdr = document.getElementById('pplHeaderInfo');
+  const ph = PHASES[state.phase];
+  hdr.innerHTML = `<div style="font-size:11px;color:#555">CURRENT</div>
+    <div style="font-family:'Bebas Neue';font-size:16px;color:${ph.color};letter-spacing:2px">${state.phase.toUpperCase()} · WK ${state.week}</div>
+    <div style="font-size:11px;color:#444;margin-top:1px">${WORKOUTS[state.workoutIdx]}</div>`;
+
+  const el = document.getElementById('pplContent');
+  if(pplView==='dashboard') el.innerHTML = renderDashboard();
+  else if(pplView==='program') el.innerHTML = renderProgram();
+  else if(pplView==='log') el.innerHTML = renderLog();
+  el.className='slide-in';
+  attachLogListeners();
+}
+
+function renderDashboard(){
+  const ph = PHASES[state.phase];
+  const cw = WORKOUTS[state.workoutIdx];
+  const exList = PROGRAM[state.phase]?.[cw]||[];
+  const sessions = Object.keys(logs).length;
+  const curBw = bwLog.length>0?bwLog[bwLog.length-1].weight:null;
+  const startBw = bwLog.length>0?bwLog[0].weight:null;
+  const bwChange = curBw&&startBw?(curBw-startBw).toFixed(1):null;
+
+  return `<div style="padding:16px 16px 0">
+    <div class="card glow" style="padding:20px;margin-bottom:16px;background:linear-gradient(135deg,#111 0%,#0f1f0f 100%);border-color:#1a2e1a">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div>
+          <div style="font-size:11px;color:#4ade80;letter-spacing:3px;font-weight:600">NEXT UP</div>
+          <div style="font-family:'Bebas Neue';font-size:34px;letter-spacing:3px;line-height:1;margin-top:4px">${cw}</div>
+          <div style="font-size:13px;color:#888;margin-top:4px">${ph.name} · Week ${state.week}</div>
+        </div>
+        <div style="text-align:right">
+          <span class="tag" style="background:${ph.color}22;color:${ph.color}">${state.phase}</span>
+          <div style="font-size:11px;color:#555;margin-top:6px">${exList.length} exercises</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+        ${exList.slice(0,4).map(e=>`<span class="tag" style="background:#1a1a1a;color:#888">${e.name}</span>`).join('')}
+        ${exList.length>4?`<span class="tag" style="background:#1a1a1a;color:#555">+${exList.length-4} more</span>`:''}
+      </div>
+      <button class="btn" style="width:100%;background:#4ade80;color:#000;padding:14px;font-size:18px;font-family:'Bebas Neue';letter-spacing:3px" onclick="startWorkout()">START WORKOUT →</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      ${statBox('SESSIONS',sessions,'','')}
+      ${statBox('BODY WT',curBw?curBw+' kg':'—','','#f59e0b')}
+      ${statBox('CHANGE',bwChange?(bwChange>0?'+'+bwChange:bwChange)+' kg':'—','',bwChange>0?'#ef4444':bwChange<0?'#4ade80':'#888')}
+    </div>
+    <div class="card" style="padding:16px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px">⚖️ BODYWEIGHT</div>
+        <button class="btn" style="background:#1a2e1a;color:#4ade80;padding:6px 14px;font-size:13px" onclick="toggleBwInput()">+ LOG</button>
+      </div>
+      <div id="bwInputArea" style="display:none;margin-bottom:10px">
+        <div style="display:flex;gap:8px">
+          <input class="input-field" id="bwField" type="number" placeholder="kg e.g. 82.5" style="flex:1" onkeydown="if(event.key==='Enter')logBw()">
+          <button class="btn" style="background:#4ade80;color:#000;padding:8px 20px;font-size:16px" onclick="logBw()">✓</button>
+        </div>
+      </div>
+      ${bwLog.length>0?`<div style="font-size:11px;color:#555;display:flex;justify-content:space-between;margin-top:4px">
+        <span>Start: ${bwLog[0].weight}kg</span><span>${bwLog.length} entries</span><span>Now: ${curBw}kg</span>
+      </div>`:'<div style="color:#555;font-size:13px;text-align:center;padding:12px 0">Log your weight to track progress</div>'}
+    </div>
+    <div class="card" style="padding:16px;margin-bottom:16px">
+      <div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;margin-bottom:12px">⚙️ REST TIMER</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:14px;color:#888">Rest duration between sets</span>
+        <div style="display:flex;align-items:center;gap:0">
+          <button class="step-btn" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#fff;width:36px;height:36px;border-radius:8px 0 0 8px;font-size:18px;cursor:pointer" onclick="adjustRest(-15)">−</button>
+          <div style="width:60px;height:36px;background:#0a0a0a;border-top:1px solid #2a2a2a;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:14px" id="restDurDisplay">${restDuration}s</div>
+          <button class="step-btn" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#fff;width:36px;height:36px;border-radius:0 8px 8px 0;font-size:18px;cursor:pointer" onclick="adjustRest(15)">+</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button class="btn" style="flex:1;background:#111;border:1px solid #222;color:#888;padding:12px;font-size:13px;letter-spacing:1px" onclick="pplView='program';renderPPL()">📋 VIEW PROGRAM</button>
+      <button class="btn" style="flex:1;background:#111;border:1px solid #222;color:#888;padding:12px;font-size:13px;letter-spacing:1px" onclick="showTab('history',document.querySelectorAll('.main-tab')[3])">📈 HISTORY</button>
+    </div>
+    <div class="card" style="padding:16px;margin-bottom:16px">
+      <div style="font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;margin-bottom:12px">📅 PHASE PROGRESS</div>
+      ${Object.entries(PHASES).map(([k,info])=>{
+        const phaseKeys=Object.keys(PHASES);
+        const isActive=k===state.phase;
+        const isDone=phaseKeys.indexOf(k)<phaseKeys.indexOf(state.phase);
+        const pct=isActive?((state.week-1)/info.weeks*100):isDone?100:0;
+        return `<div style="margin-bottom:10px;opacity:${isActive?1:0.5}">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:10px;height:10px;border-radius:50%;background:${info.color}"></div>
+              <span style="font-weight:600;font-size:14px">${k}: ${info.name}</span>
+            </div>
+            <span style="font-size:12px;color:#555">${isActive?'Wk '+state.week+'/'+info.weeks:isDone?'✓ Done':'Upcoming'}</span>
+          </div>
+          <div style="height:4px;background:#1a1a1a;border-radius:2px">
+            <div style="height:100%;border-radius:2px;background:${info.color};width:${pct}%;transition:width 0.5s ease"></div>
+          </div>
+          ${isActive?`<div style="font-size:11px;color:#555;margin-top:4px">${info.tag}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function statBox(label,val,unit,color){
+  return `<div class="card" style="padding:14px 10px;text-align:center">
+    <div style="font-family:'Bebas Neue';font-size:22px;color:${color||'#4ade80'};line-height:1">${val}</div>
+    <div style="font-size:10px;color:#555;letter-spacing:2px;margin-top:4px">${label}</div>
+  </div>`;
+}
+
+function renderProgram(){
+  const exercises = PROGRAM[selectedPhase]?.[selectedWorkout]||[];
+  const phInfo = PHASES[selectedPhase];
+  return `<div style="padding:16px 16px 0">
+    <button class="btn" style="background:transparent;color:#555;padding:0;font-size:13px;margin-bottom:12px" onclick="pplView='dashboard';renderPPL()">← BACK</button>
+    <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px">
+      ${Object.entries(PHASES).map(([k,i])=>`<button class="btn" onclick="selectedPhase='${k}';renderPPL()" style="background:${selectedPhase===k?i.color:'#111'};color:${selectedPhase===k?'#000':'#888'};border:1px solid ${selectedPhase===k?i.color:'#222'};padding:8px 16px;font-size:14px;white-space:nowrap">${k}</button>`).join('')}
+    </div>
+    <div class="card" style="padding:12px;margin-bottom:12px;border-color:${phInfo.color}44">
+      <div style="font-family:'Bebas Neue';font-size:18px;color:${phInfo.color};letter-spacing:2px">${phInfo.name}</div>
+      <div style="font-size:12px;color:#666">${phInfo.tag} · ${phInfo.weeks} weeks</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px">
+      ${WORKOUTS.map(w=>`<button class="btn" onclick="selectedWorkout='${w}';renderPPL()" style="background:${selectedWorkout===w?WCOLORS[w]:'#111'};color:${selectedWorkout===w?'#fff':'#666'};border:1px solid ${selectedWorkout===w?WCOLORS[w]:'#222'};padding:7px 12px;font-size:12px;white-space:nowrap">${w}</button>`).join('')}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${exercises.map((ex,i)=>`<div class="card" style="padding:14px">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <span style="font-family:'Bebas Neue';font-size:11px;color:${WCOLORS[selectedWorkout]};letter-spacing:2px;min-width:24px">${String(i+1).padStart(2,'0')}</span>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:15px">${ex.name}</div>
+            <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+              <span class="tag" style="background:#1a1a1a;color:#888">${typeof ex.sets==='number'?ex.sets+' sets':ex.sets}</span>
+              <span class="tag" style="background:#1a1a1a;color:#888">${ex.reps} reps</span>
+            </div>
+            <div style="font-size:12px;color:#555;margin-top:6px;font-style:italic">💡 ${ex.notes}</div>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+    ${selectedPhase===state.phase&&selectedWorkout===WORKOUTS[state.workoutIdx]?`
+      <div style="padding:16px 0">
+        <button class="btn" style="width:100%;background:#4ade80;color:#000;padding:14px;font-size:18px;font-family:'Bebas Neue';letter-spacing:3px" onclick="startWorkout()">START THIS WORKOUT →</button>
+      </div>`:''}
+  </div>`;
+}
+
+function renderLog(){
+  if(!activeWorkout) return '<div style="padding:40px;text-align:center;color:#555">No active workout</div>';
+  const done = activeWorkout.exercises.reduce((a,ex)=>a+ex.sets.filter(s=>s.reps&&s.load).length,0);
+  const total = activeWorkout.exercises.reduce((a,ex)=>a+ex.sets.length,0);
+  const prevSessionKey = getPrevSessionKey();
+  const prevSession = prevSessionKey?logs[prevSessionKey]:null;
+
+  return `<div style="padding:16px 16px 0">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div>
+        <div style="font-family:'Bebas Neue';font-size:26px;letter-spacing:3px;line-height:1;color:#4ade80" class="pulse">● ACTIVE</div>
+        <div style="font-size:13px;color:#888;margin-top:2px">${done}/${total} sets logged</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" style="background:#1a1a1a;color:#ef4444;padding:8px 14px;font-size:13px;border:1px solid #2a1a1a" onclick="cancelWorkout()">CANCEL</button>
+        <button class="btn" style="background:#4ade80;color:#000;padding:8px 14px;font-size:14px;font-weight:700" onclick="finishWorkout()">FINISH ✓</button>
+      </div>
+    </div>
+    <div style="height:4px;background:#1a1a1a;border-radius:2px;margin-bottom:16px">
+      <div style="height:100%;border-radius:2px;background:#4ade80;width:${total>0?(done/total*100):0}%;transition:width 0.3s"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px" id="exerciseList">
+      ${activeWorkout.exercises.map((ex,exIdx)=>renderExercise(ex,exIdx,prevSession)).join('')}
+    </div>
+    <div style="padding:16px 0 8px">
+      <button class="btn" style="width:100%;background:#4ade80;color:#000;padding:16px;font-size:20px;font-family:'Bebas Neue';letter-spacing:3px" onclick="finishWorkout()">FINISH WORKOUT ✓</button>
+    </div>
+  </div>`;
+}
+
+function renderExercise(ex, exIdx, prevSession){
+  const doneCount = ex.sets.filter(s=>s.reps&&s.load).length;
+  const prevEx = prevSession?.exercises?.find(e=>e.name===ex.name);
+  return `<div class="card" style="border-color:#1e1e1e" id="exCard${exIdx}">
+    <div style="padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleEx(${exIdx})">
+      <div>
+        <div style="font-weight:600;font-size:15px">${ex.name}</div>
+        <div style="font-size:12px;color:#555;margin-top:2px">Target: ${ex.targetReps} reps · ${ex.sets.length} sets</div>
+        ${prevEx?`<div style="font-size:11px;color:#2a5a3a;margin-top:2px">prev: ${prevEx.sets.filter(s=>s.load).map(s=>s.load+'kg×'+s.reps).join(', ')}</div>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:'Bebas Neue';font-size:16px;color:${doneCount===ex.sets.length&&doneCount>0?'#4ade80':'#555'}">${doneCount}/${ex.sets.length}</span>
+        <span id="exArrow${exIdx}" style="color:#555;display:inline-block;transition:transform 0.2s">›</span>
+      </div>
+    </div>
+    <div id="exBody${exIdx}" style="display:none;border-top:1px solid #1a1a1a;padding:12px 14px">
+      <div style="font-size:11px;color:#555;margin-bottom:10px;font-style:italic">💡 ${ex.notes}</div>
+      <div style="display:grid;grid-template-columns:32px 1fr 1fr 60px;gap:6px;margin-bottom:8px">
+        <div style="font-size:10px;color:#444;text-align:center">SET</div>
+        <div style="font-size:10px;color:#444;text-align:center">WEIGHT (kg)</div>
+        <div style="font-size:10px;color:#444;text-align:center">REPS</div>
+        <div style="font-size:10px;color:#444;text-align:center">REST</div>
+      </div>
+      ${ex.sets.map((s,setIdx)=>{
+        const isDone=s.reps&&s.load;
+        const prevSet = prevEx?.sets?.[setIdx];
+        return `<div style="display:grid;grid-template-columns:32px 1fr 1fr 60px;gap:6px;margin-bottom:8px;align-items:center">
+          <div style="text-align:center;font-family:'Bebas Neue';font-size:18px;color:${isDone?'#4ade80':'#333'}">${setIdx+1}</div>
+          <input class="input-field log-field" data-ex="${exIdx}" data-set="${setIdx}" data-field="load" type="number" placeholder="${prevSet?.load||'0'}" value="${s.load||''}" style="text-align:center;font-size:15px">
+          <input class="input-field log-field" data-ex="${exIdx}" data-set="${setIdx}" data-field="reps" type="number" placeholder="${prevSet?.reps||ex.targetReps.split('-')[0]||''}" value="${s.reps||''}" style="text-align:center;font-size:15px">
+          <button class="btn" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#888;padding:6px 0;font-size:11px;letter-spacing:1px;width:100%" onclick="startRestTimer()">REST</button>
+        </div>`;
+      }).join('')}
+      <button class="btn" style="background:transparent;color:#555;border:1px dashed #333;width:100%;padding:8px;font-size:13px;margin-top:4px" onclick="addSet(${exIdx})">+ ADD SET</button>
+    </div>
+  </div>`;
+}
+
+let openExIdx = 0;
+function toggleEx(i){
+  const body = document.getElementById('exBody'+i);
+  const arrow = document.getElementById('exArrow'+i);
+  if(!body) return;
+  const isOpen = body.style.display!=='none';
+  // close all
+  document.querySelectorAll('[id^=exBody]').forEach(b=>b.style.display='none');
+  document.querySelectorAll('[id^=exArrow]').forEach(a=>a.style.transform='rotate(0)');
+  if(!isOpen){
+    body.style.display='block';
+    arrow.style.transform='rotate(90deg)';
+    openExIdx=i;
+  }
+}
+
+function attachLogListeners(){
+  document.querySelectorAll('.log-field').forEach(inp=>{
+    inp.addEventListener('change', e=>{
+      const exIdx=parseInt(e.target.dataset.ex);
+      const setIdx=parseInt(e.target.dataset.set);
+      const field=e.target.dataset.field;
+      if(!activeWorkout) return;
+      activeWorkout.exercises[exIdx].sets[setIdx][field]=e.target.value;
+      // refresh progress bar
+      const done=activeWorkout.exercises.reduce((a,ex)=>a+ex.sets.filter(s=>s.reps&&s.load).length,0);
+      const total=activeWorkout.exercises.reduce((a,ex)=>a+ex.sets.length,0);
+      const bar=document.querySelector('[style*="background:#4ade80;width"]');
+      if(bar) bar.style.width=(total>0?(done/total*100):0)+'%';
+    });
+  });
+}
+
+function addSet(exIdx){
+  if(!activeWorkout) return;
+  activeWorkout.exercises[exIdx].sets.push({reps:'',load:''});
+  renderPPL();
+  setTimeout(()=>toggleEx(exIdx),50);
+}
+
+function getPrevSessionKey(){
+  const cw = WORKOUTS[state.workoutIdx];
+  // Find last session with same workout name
+  const matching = Object.entries(logs)
+    .filter(([k])=>k.includes(cw))
+    .sort((a,b)=>new Date(b[1]?.date)-new Date(a[1]?.date));
+  return matching.length>0?matching[0][0]:null;
+}
+
+function startWorkout(){
+  const cw = WORKOUTS[state.workoutIdx];
+  const exList = PROGRAM[state.phase]?.[cw]||[];
+  activeWorkout = {
+    key:`${state.phase}-W${state.week}-${cw}`,
+    exercises: exList.map(ex=>({
+      name:ex.name,
+      sets:Array.from({length:typeof ex.sets==='number'?ex.sets:1},()=>({reps:'',load:''})),
+      targetReps:ex.reps,
+      notes:ex.notes
+    })),
+    date:new Date().toISOString()
+  };
+  pplView='log';
+  openExIdx=0;
+  renderPPL();
+  setTimeout(()=>toggleEx(0),100);
+}
+
+function cancelWorkout(){
+  activeWorkout=null;
+  pplView='dashboard';
+  renderPPL();
+}
+
+function finishWorkout(){
+  if(!activeWorkout) return;
+  logs[activeWorkout.key]=activeWorkout;
+  // Update PRs
+  activeWorkout.exercises.forEach(ex=>{
+    ex.sets.forEach(s=>{
+      if(!s.load||!s.reps) return;
+      const load=parseFloat(s.load),reps=parseInt(s.reps);
+      if(isNaN(load)||isNaN(reps)) return;
+      const existing=prs[ex.name];
+      if(!existing||load>existing.load||(load===existing.load&&reps>existing.reps)){
+        prs[ex.name]={load,reps,date:activeWorkout.date};
+      }
+    });
+  });
+  let nextIdx=state.workoutIdx+1,nextWeek=state.week,nextPhase=state.phase;
+  if(nextIdx>=WORKOUTS.length){
+    nextIdx=0;nextWeek=state.week+1;
+    if(nextWeek>PHASES[state.phase].weeks){
+      nextWeek=1;
+      const pk=Object.keys(PHASES),pi=pk.indexOf(state.phase);
+      nextPhase=pk[(pi+1)%pk.length];
+    }
+  }
+  state={phase:nextPhase,week:nextWeek,workoutIdx:nextIdx};
+  activeWorkout=null;
+  pplView='dashboard';
+  saveState();
+  renderPPL();
+}
+
+// BW
+function toggleBwInput(){
+  const a=document.getElementById('bwInputArea');
+  if(a) a.style.display=a.style.display==='none'?'block':'none';
+}
+function logBw(){
+  const f=document.getElementById('bwField');
+  const w=parseFloat(f?.value);
+  if(isNaN(w)) return;
+  bwLog.push({date:new Date().toISOString(),weight:w});
+  saveState();
+  renderPPL();
+}
+
+// REST DURATION
+function adjustRest(delta){
+  restDuration=Math.max(10,restDuration+delta);
+  save('fit-restDur',restDuration);
+  const d=document.getElementById('restDurDisplay');
+  if(d) d.textContent=restDuration+'s';
+}
+
+// REST TIMER
+function startRestTimer(){
+  restRemaining=restDuration;
+  document.getElementById('restClock').textContent=restRemaining;
+  document.getElementById('restOverlay').classList.add('active');
+  clearInterval(restTimer);
+  restTimer=setInterval(()=>{
+    restRemaining--;
+    document.getElementById('restClock').textContent=restRemaining;
+    if(restRemaining<=0){
+      clearInterval(restTimer);
+      document.getElementById('restOverlay').classList.remove('active');
+      beep(880,0.5);setTimeout(()=>beep(1100,0.5),150);
+    }
+    if(restRemaining<=3&&restRemaining>0) beep(440,0.2);
+  },1000);
+}
+function skipRest(){
+  clearInterval(restTimer);
+  document.getElementById('restOverlay').classList.remove('active');
+}
+
+// ══════════════════════════════════════════════════
+// HISTORY
+// ══════════════════════════════════════════════════
+let histView='prs';
+function renderHistory(){
+  const sessions=Object.entries(logs).sort((a,b)=>new Date(b[1]?.date)-new Date(a[1]?.date));
+  const prList=Object.entries(prs).sort((a,b)=>new Date(b[1]?.date)-new Date(a[1]?.date));
+
+  document.getElementById('historyContent').innerHTML=`
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      ${[['prs','🏆 PRs'],['sessions','📋 LOGS']].map(([v,l])=>`
+        <button class="btn" onclick="histView='${v}';renderHistory()" style="flex:1;background:${histView===v?'#4ade80':'#111'};color:${histView===v?'#000':'#666'};border:1px solid ${histView===v?'#4ade80':'#222'};padding:10px;font-size:14px;font-family:'Bebas Neue';letter-spacing:2px">${l}</button>
+      `).join('')}
+    </div>
+    ${histView==='prs'?renderPRs(prList):renderSessions(sessions)}
+  `;
+}
+
+function renderPRs(prList){
+  if(prList.length===0) return `<div style="text-align:center;color:#444;padding:40px 0">
+    <div style="font-size:48px;margin-bottom:12px">🏆</div>
+    <div style="font-family:'Bebas Neue';font-size:22px;letter-spacing:3px">NO PRs YET</div>
+    <div style="font-size:13px;color:#555;margin-top:8px">Complete workouts to set your bests</div>
+  </div>`;
+  return prList.map(([name,pr])=>`
+    <div class="card" style="padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div>
+        <div style="font-weight:600;font-size:15px">${name}</div>
+        <div style="font-size:11px;color:#555;margin-top:2px">${new Date(pr.date).toLocaleDateString()}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Bebas Neue';font-size:26px;color:#f59e0b;line-height:1">${pr.load}kg</div>
+        <div style="font-size:11px;color:#888">${pr.reps} reps</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderSessions(sessions){
+  if(sessions.length===0) return `<div style="text-align:center;color:#444;padding:40px 0">
+    <div style="font-size:48px">📋</div>
+    <div style="font-family:'Bebas Neue';font-size:22px;letter-spacing:3px;margin-top:12px">NO SESSIONS YET</div>
+  </div>`;
+  return sessions.map(([key,session])=>{
+    if(!session) return '';
+    const setsLogged=session.exercises?.reduce((a,ex)=>a+ex.sets.filter(s=>s.load).length,0)||0;
+    const label=key.split('-').slice(2).join(' ');
+    const phaseWeek=key.split('-').slice(0,2).join(' ');
+    return `<div class="card" style="padding:14px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-weight:600;font-size:15px">${label}</div>
+          <div style="font-size:11px;color:#555">${new Date(session.date).toLocaleDateString()} · ${setsLogged} sets</div>
+        </div>
+        <span class="tag" style="background:#1a1a1a;color:#888;align-self:flex-start">${phaseWeek}</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${session.exercises?.map(ex=>{
+          const maxLoad=Math.max(...ex.sets.map(s=>parseFloat(s.load)||0));
+          return maxLoad>0?`<span class="tag" style="background:#1a2e1a;color:#4ade80">${ex.name}: ${maxLoad}kg</span>`:'';
+        }).join('')||''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════
+// CARDIO DETAIL
+// ══════════════════════════════════════════════════
+const workoutData={
+  tabata:{title:'Tabata Exercises',render:()=>`
+    <div class="rules-box"><div class="rules-box-title">Rules</div>
+    <p>8 × 4 minute rounds<br>20 seconds ON, 10 seconds OFF<br>As fast as you can · 10 seconds recovery</p></div>
+    <div class="sub-heading">Workout 1</div>
+    <div class="exercise-list">${tabataEx(['Alternate Leg Squat Thrusts','Burpee Lunges','Press Ups','Squat Jumps','Static Squats'],'30 Second rest between rounds')}</div>
+    <div class="sub-heading">Workout 2</div>
+    <div class="exercise-list">${tabataEx(['In & Outs (Double Leg Squat Thrusts)','Burpees','Lumbar Crunches','Press Ups','Sit Down Jump-Ups'],'30 Second rest between rounds')}</div>`},
+  gym:{title:'Gym Based Workouts',render:()=>`
+    ${gymRound(1,'800m Treadmill',['30 Chest to Floor Burpees','750m Row'],'Repeat 4 times')}
+    ${gymRound(2,'600m Treadmill',['20 Chest to Floor Burpees','500m Row'])}
+    ${gymRound(3,'400m Treadmill',['20 Chest to Floor Burpees','300m Row'])}
+    ${gymRound(4,'800m Treadmill',['30 Chest to Floor Burpees','750m Row'])}
+    <div class="rules-box" style="margin-top:12px"><div class="rules-box-title">Finisher</div><p>5 × 800m @ 3% incline — Best Effort</p></div>`},
+  bleep:{title:'Treadmill Bleep Test',render:()=>`
+    <div class="rules-box"><div class="rules-box-title">Rules</div>
+    <p>1. Set treadmill to 8 km/hr<br>2. Each minute, increase speed by 0.5 km/hr</p></div>
+    <div class="table-wrap"><table class="bleep-table">
+      <thead><tr><th>Minute</th><th>Speed (km/hr)</th><th style="width:40%">Intensity</th></tr></thead>
+      <tbody>${bleepRows()}</tbody>
+    </table></div>`},
+  rowing:{title:'Rowing Session',render:()=>`
+    <div class="rules-box" style="border-color:rgba(164,127,255,0.25);background:rgba(164,127,255,0.06)">
+    <div class="rules-box-title" style="color:#a47fff">Rules</div>
+    <p>Select Intervals on the rowing machine. Best effort every interval.</p></div>
+    <div class="sub-heading">Protocol</div>
+    <div class="row-steps">
+      <div class="row-step"><div class="row-step-num">1</div><div class="row-step-text">Set rowing machine to <strong>Intervals mode</strong></div></div>
+      <div class="row-step"><div class="row-step-num">2</div><div class="row-step-text"><strong>7 × 1 minute</strong> on, <strong>1 minute</strong> off</div></div>
+      <div class="row-step"><div class="row-step-num">3</div><div class="row-step-text"><strong>Best effort</strong> each work interval</div></div>
+      <div class="row-step"><div class="row-step-num">4</div><div class="row-step-text"><strong>10 rounds</strong> of 10 minutes total</div></div>
+    </div>`},
+  outdoor:{title:'Outdoor Cardio',render:()=>`
+    <div class="outdoor-card"><div class="outdoor-num">Session 1</div><div class="outdoor-text">6 × 500m loop<br><span style="color:var(--muted);font-size:0.8rem">60 seconds ON · 90 seconds recovery</span></div></div>
+    <div class="outdoor-card"><div class="outdoor-num">Session 2</div><div class="outdoor-text">4–5 mile steady state run<br><span style="color:var(--muted);font-size:0.8rem">Once per week</span></div></div>
+    <div class="outdoor-card"><div class="outdoor-num">Session 3</div><div class="outdoor-text">2 × 1300m laps<br>4 × 600m laps<br>4 × Hill Sprints (100m)</div></div>`}
+};
+
+function tabataEx(exs,note){
+  return exs.map((ex,i)=>`<div class="exercise-item"><div class="ex-num">${i+1}</div><div><div class="ex-name">${ex}</div>${i===0?`<div class="ex-note">${note}</div>`:''}</div></div>`).join('');
+}
+function gymRound(num,first,rest,note=''){
+  return `<div class="gym-round"><div class="gym-round-header"><span>Round ${num}</span><span style="font-size:0.75rem;color:var(--muted)">${note}</span></div>
+    <div class="gym-exercise"><div class="gym-dot"></div>${first}</div>
+    ${rest.map(r=>`<div class="gym-exercise"><div class="gym-dot"></div>${r}</div>`).join('')}</div>`;
+}
+function bleepRows(){
+  const data=[[1,8],[2,8.5],[3,9],[4,9.5],[5,10],[6,10.5],[7,11],[8,11.5],[9,12],[10,12.5],[11,13],[12,13.5],[13,14],[14,14.5],[15,15],[16,15.5],[17,16]];
+  return data.map(([m,s])=>{
+    const pct=Math.round(((s-8)/(16-8))*100);
+    return `<tr><td>${m}</td><td><strong>${s}</strong></td><td><span class="speed-bar" style="width:${pct}%"></span></td></tr>`;
+  }).join('');
+}
+function openDetail(key){
+  const d=workoutData[key];
+  document.getElementById('detail-title').textContent=d.title;
+  document.getElementById('detail-body').innerHTML=d.render();
+  document.getElementById('detail-overlay').classList.add('open');
+  document.getElementById('detail-overlay').scrollTop=0;
+}
+function closeDetail(){document.getElementById('detail-overlay').classList.remove('open')}
+
+// ══════════════════════════════════════════════════
+// CARDIO TIMER (Timer tab)
+// ══════════════════════════════════════════════════
+let timerMode2='tabata';
+let timerState2={running:false,paused:false};
+let timerInterval2=null;
+let cPhase2='work',cRound2=0,cTotal2=0,cLeft2=0,cDur2=0;
+
+const modes2={
+  tabata:{workSec:20,restSec:10,rounds:8},
+  amrap:{workSec:60,restSec:30,rounds:10},
+  intervals:{workSec:60,restSec:90,rounds:6},
+  bleep:{workSec:60,restSec:0,rounds:17}
+};
+
+function selectMode(m,btn){
+  timerMode2=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  resetCTimer2();
+  renderParams2();
+}
+
+function renderParams2(){
+  const m=modes2[timerMode2];
+  const panel=document.getElementById('params2');
+  if(!panel) return;
+  panel.innerHTML=`
+    <div class="param-row"><div class="param-label">Work (seconds)</div>
+      <div class="param-stepper">
+        <button class="step-btn" onclick="adjP2('workSec',-5)">−</button>
+        <div class="step-val" id="p2-workSec">${m.workSec}</div>
+        <button class="step-btn" onclick="adjP2('workSec',5)">+</button>
+      </div>
+    </div>
+    ${timerMode2!=='bleep'?`<div class="param-row"><div class="param-label">Rest (seconds)</div>
+      <div class="param-stepper">
+        <button class="step-btn" onclick="adjP2('restSec',-5)">−</button>
+        <div class="step-val" id="p2-restSec">${m.restSec}</div>
+        <button class="step-btn" onclick="adjP2('restSec',5)">+</button>
+      </div>
+    </div>`:''}
+    <div class="param-row"><div class="param-label">Rounds</div>
+      <div class="param-stepper">
+        <button class="step-btn" onclick="adjP2('rounds',-1)">−</button>
+        <div class="step-val" id="p2-rounds">${m.rounds}</div>
+        <button class="step-btn" onclick="adjP2('rounds',1)">+</button>
+      </div>
+    </div>`;
+}
+
+function adjP2(key,delta){
+  const m=modes2[timerMode2];
+  if(key==='rounds') m[key]=Math.max(1,m[key]+delta);
+  else m[key]=Math.max(5,m[key]+delta);
+  const el=document.getElementById('p2-'+key);
+  if(el) el.textContent=m[key];
+  resetCTimer2();
+}
+
+function startCTimer2(){
+  if(timerState2.paused){
+    timerState2.paused=false;timerState2.running=true;
+    document.getElementById('btn-cstart2').style.display='none';
+    document.getElementById('btn-cpause2').style.display='flex';
+    cTick2();return;
+  }
+  const m=modes2[timerMode2];
+  cTotal2=m.rounds;cRound2=1;cPhase2='work';cLeft2=m.workSec;cDur2=m.workSec;
+  timerState2={running:true,paused:false};
+  document.getElementById('btn-cstart2').style.display='none';
+  document.getElementById('btn-cpause2').style.display='flex';
+  cUpdate2();cTick2();
+}
+function cTick2(){
+  clearInterval(timerInterval2);
+  timerInterval2=setInterval(()=>{
+    if(!timerState2.running||timerState2.paused) return;
+    cLeft2--;cUpdate2();
+    if(cLeft2<=0) cNext2();
+  },1000);
+}
+function cNext2(){
+  const m=modes2[timerMode2];
+  if(cPhase2==='work'){
+    if(m.restSec>0){cPhase2='rest';cLeft2=m.restSec;cDur2=m.restSec;beep(300,0.3);}
+    else{cRound2++;if(cRound2>cTotal2){cDone2();return;}cLeft2=m.workSec;cDur2=m.workSec;beep(600,0.5);}
+  } else {
+    cRound2++;if(cRound2>cTotal2){cDone2();return;}
+    cPhase2='work';cLeft2=m.workSec;cDur2=m.workSec;beep(600,0.5);
+  }
+  cUpdate2();
+}
+function cDone2(){
+  clearInterval(timerInterval2);timerState2.running=false;
+  document.getElementById('btn-cpause2').style.display='none';
+  const bs=document.getElementById('btn-cstart2');bs.style.display='flex';bs.textContent='DONE ✓';
+  const ph=document.getElementById('t-phase2');ph.textContent='COMPLETE';ph.className='timer-phase steady';
+  const clk=document.getElementById('t-clock2');clk.textContent='00:00';clk.className='timer-clock done flashing';
+  beep(880,0.6);setTimeout(()=>beep(1100,0.6),200);setTimeout(()=>beep(1320,0.8),400);
+}
+function pauseCTimer2(){
+  timerState2.paused=true;
+  document.getElementById('btn-cpause2').style.display='none';
+  const bs=document.getElementById('btn-cstart2');bs.style.display='flex';bs.textContent='RESUME';
+}
+function resetCTimer2(){
+  clearInterval(timerInterval2);timerState2={running:false,paused:false};
+  cPhase2='work';cRound2=0;cLeft2=0;
+  const bs=document.getElementById('btn-cstart2');if(bs){bs.style.display='flex';bs.textContent='START';}
+  const bp=document.getElementById('btn-cpause2');if(bp) bp.style.display='none';
+  const ph=document.getElementById('t-phase2');if(ph){ph.textContent='READY';ph.className='timer-phase work';}
+  const clk=document.getElementById('t-clock2');if(clk){clk.textContent='00:00';clk.className='timer-clock work';}
+  const tr=document.getElementById('t-round2');if(tr) tr.textContent='—';
+  const tt=document.getElementById('t-total2');if(tt) tt.textContent='—';
+  cSetRing2(0,'var(--accent)');
+}
+function cUpdate2(){
+  const mins=Math.floor(cLeft2/60),secs=cLeft2%60;
+  const clk=document.getElementById('t-clock2');
+  const ph=document.getElementById('t-phase2');
+  if(!clk||!ph) return;
+  clk.textContent=`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  if(cPhase2==='work'){
+    clk.className='timer-clock work';ph.className='timer-phase work';
+    ph.textContent=timerMode2.toUpperCase()+' — WORK';
+    cSetRing2((cDur2-cLeft2)/cDur2,'var(--accent)');
+  } else {
+    clk.className='timer-clock rest';ph.className='timer-phase rest';ph.textContent='REST';
+    cSetRing2((cDur2-cLeft2)/cDur2,'var(--accent3)');
+  }
+  const tr=document.getElementById('t-round2');if(tr) tr.textContent=cRound2;
+  const tt=document.getElementById('t-total2');if(tt) tt.textContent=modes2[timerMode2].rounds;
+  if(cLeft2<=3&&cLeft2>0) beep(440,0.15);
+}
+function cSetRing2(p,color){
+  const circ=364.4;
+  const ring=document.getElementById('ring2');
+  if(!ring) return;
+  ring.style.strokeDashoffset=circ-(p*circ);ring.style.stroke=color;
+}
+
+// ══════════════════════════════════════════════════
+// AUDIO
+// ══════════════════════════════════════════════════
+let audioCtx=null;
+function beep(freq,vol){
+  try{
+    if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    osc.connect(gain);gain.connect(audioCtx.destination);
+    osc.frequency.value=freq;osc.type='sine';
+    gain.gain.setValueAtTime(vol,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.15);
+    osc.start();osc.stop(audioCtx.currentTime+0.15);
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+renderPPL();
+renderParams2();
+</script>
+</body>
+</html>

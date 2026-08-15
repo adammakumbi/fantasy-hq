@@ -1,0 +1,64 @@
+name: Build FitApp APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/workout-tracking-apk-j96167
+    paths:
+      - 'FitApp/**'
+      - '.github/workflows/build-fitapp-apk.yml'
+      - '!FitApp/dist/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK platform and build-tools
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+        working-directory: FitApp
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --stacktrace
+        working-directory: FitApp
+
+      - name: Upload APK as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FitApp-debug-apk
+          path: FitApp/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Commit APK to repo
+        run: |
+          mkdir -p FitApp/dist
+          cp FitApp/app/build/outputs/apk/debug/app-debug.apk FitApp/dist/FitApp-debug.apk
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add FitApp/dist/FitApp-debug.apk
+          if git diff --cached --quiet; then
+            echo "No APK changes to commit."
+          else
+            git commit -m "Add built debug APK from CI"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
