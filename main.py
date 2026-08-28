@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-CURRENT_SEASON = os.getenv("CURRENT_SEASON", "2025-26")
+CURRENT_SEASON = os.getenv("CURRENT_SEASON", "2026-27 ")
 
 
 @asynccontextmanager
